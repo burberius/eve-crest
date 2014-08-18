@@ -1,18 +1,9 @@
 package net.troja.eve.crest;
 
 public class GeneralType {
-    private String id_str;
     private String href;
     private int id;
     private String name;
-
-    public String getId_str() {
-	return id_str;
-    }
-
-    public void setId_str(final String id_str) {
-	this.id_str = id_str;
-    }
 
     public String getHref() {
 	return href;

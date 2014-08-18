@@ -3,8 +3,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.troja.eve</groupId>
 	<artifactId>crest</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>Library for the Eve Online CREST API</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+	</properties>
+
 
 	<dependencies>
 		<dependency>

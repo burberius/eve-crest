@@ -5,7 +5,13 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class PublicParserTest {
-    private final PublicParser classToTest = new PublicParser() { };
+    private final PublicParser classToTest = new PublicParser() {
+
+	@Override
+	protected String getPath() {
+	    return "/";
+	}
+    };
 
     @Test
     public void testCaching() {

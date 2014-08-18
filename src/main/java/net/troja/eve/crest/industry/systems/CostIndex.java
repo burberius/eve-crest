@@ -3,7 +3,6 @@ package net.troja.eve.crest.industry.systems;
 public class CostIndex {
     private double costIndex;
     private int activityID;
-    private String activityID_str;
     private String activityName;
 
     public double getCostIndex() {
@@ -22,14 +21,6 @@ public class CostIndex {
 	this.activityID = activityID;
     }
 
-    public String getActivityID_str() {
-	return activityID_str;
-    }
-
-    public void setActivityID_str(final String activityID_str) {
-	this.activityID_str = activityID_str;
-    }
-
     public String getActivityName() {
 	return activityName;
     }
@@ -40,7 +31,7 @@ public class CostIndex {
 
     @Override
     public String toString() {
-	return "SystemCostIndex [costIndex=" + costIndex + ", activityID=" + activityID + ", activityID_str="
-		+ activityID_str + ", activityName=" + activityName + "]";
+	return "CostIndex [costIndex=" + costIndex + ", activityID=" + activityID + ", activityName=" + activityName
+		+ "]";
     }
 }
