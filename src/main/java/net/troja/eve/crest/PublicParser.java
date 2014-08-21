@@ -5,8 +5,6 @@ import java.io.StringWriter;
 import java.lang.reflect.ParameterizedType;
 import java.net.URL;
 
-import net.troja.eve.crest.industry.teams.IndustryTeamsParser;
-
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +14,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class PublicParser<T extends ContainerType> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(IndustryTeamsParser.class);
+public abstract class PublicParser<T extends ContainerType<?>> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PublicParser.class);
     private final static String API_URL = "http://public-crest.eveonline.com";
 
     protected int cacheDuration = 1;
@@ -34,8 +32,9 @@ public abstract class PublicParser<T extends ContainerType> {
 
     @SuppressWarnings("unchecked")
     public T getData() {
+	final String name = this.getClass().getSimpleName().replace("Parser", "");
 	if (isOutdated()) {
-	    LOGGER.info("Updating data");
+	    LOGGER.info("Updating " + name + " data");
 	    String data = null;
 	    try {
 		data = getData(getPath());
@@ -43,7 +42,7 @@ public abstract class PublicParser<T extends ContainerType> {
 			.getGenericSuperclass()).getActualTypeArguments()[0]);
 		updateCachedAt();
 	    } catch (final IOException e) {
-		LOGGER.error("Could not download market prices", e);
+		LOGGER.error("Could not download " + name, e);
 		if (data != null) {
 		    try {
 			System.out.println(getPrettyString(data));
@@ -54,7 +53,7 @@ public abstract class PublicParser<T extends ContainerType> {
 		}
 		return null;
 	    }
-	    LOGGER.info("Done (" + cachedData.getTotalCount() + " entries)");
+	    LOGGER.info("Done (" + cachedData.getTotalCount() + " " + name + " entries)");
 	}
 	return cachedData;
     }

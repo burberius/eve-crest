@@ -1,8 +1,11 @@
 package net.troja.eve.crest;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ContainerType<T> {
+public class ContainerType<T> implements Serializable {
+    private static final long serialVersionUID = -7178103815157603412L;
+
     private int totalCount;
     private int pageCount;
     private List<T> items;

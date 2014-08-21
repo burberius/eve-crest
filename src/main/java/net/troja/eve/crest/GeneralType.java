@@ -1,6 +1,10 @@
 package net.troja.eve.crest;
 
-public class GeneralType {
+import java.io.Serializable;
+
+public class GeneralType implements Serializable {
+    private static final long serialVersionUID = 8952654062451756797L;
+
     private String href;
     private int id;
     private String name;
