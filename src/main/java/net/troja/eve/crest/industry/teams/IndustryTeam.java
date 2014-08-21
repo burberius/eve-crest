@@ -1,11 +1,14 @@
 package net.troja.eve.crest.industry.teams;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import net.troja.eve.crest.GeneralType;
 
-public class IndustryTeam {
+public class IndustryTeam implements Serializable {
+    private static final long serialVersionUID = 9079325810678778213L;
+
     private GeneralType solarSystem;
     private String name;
     private Date creationTime;

@@ -1,10 +1,13 @@
 package net.troja.eve.crest.industry.systems;
 
+import java.io.Serializable;
 import java.util.List;
 
 import net.troja.eve.crest.GeneralType;
 
-public class IndustrySystem {
+public class IndustrySystem implements Serializable {
+    private static final long serialVersionUID = 5467636267727502281L;
+
     private List<CostIndex> systemCostIndices;
     private GeneralType solarSystem;
 

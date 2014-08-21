@@ -1,8 +1,12 @@
 package net.troja.eve.crest.market.prices;
 
+import java.io.Serializable;
+
 import net.troja.eve.crest.GeneralType;
 
-public class MarketPrice {
+public class MarketPrice implements Serializable {
+    private static final long serialVersionUID = -5607805124318708430L;
+
     private double adjustedPrice;
     private double averagePrice;
     private GeneralType type;

@@ -1,8 +1,11 @@
 package net.troja.eve.crest.industry.specialities;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class IndustrySpeciality {
+public class IndustrySpeciality implements Serializable {
+    private static final long serialVersionUID = 6218032369921531179L;
+
     private int id;
     private String name;
     private List<Id> groups;

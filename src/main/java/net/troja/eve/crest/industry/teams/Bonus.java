@@ -1,9 +1,13 @@
 package net.troja.eve.crest.industry.teams;
 
-public class Bonus {
+import java.io.Serializable;
+
+public class Bonus implements Serializable {
+    private static final long serialVersionUID = 3857919232874247825L;
+
     private int id;
     private String bonusType;
-    private int value;
+    private double value;
 
     public int getId() {
 	return id;
@@ -21,11 +25,11 @@ public class Bonus {
 	this.bonusType = bonusType;
     }
 
-    public int getValue() {
+    public double getValue() {
 	return value;
     }
 
-    public void setValue(final int value) {
+    public void setValue(final double value) {
 	this.value = value;
     }
 

@@ -1,24 +1,9 @@
 package net.troja.eve.crest.industry.teams;
 
-import java.util.List;
+import java.io.Serializable;
 
 import net.troja.eve.crest.ContainerType;
 
-public class IndustryTeams extends ContainerType {
-    private List<IndustryTeam> items;
-
-    public List<IndustryTeam> getItems() {
-	return items;
-    }
-
-    public void setItems(final List<IndustryTeam> items) {
-	this.items = items;
-    }
-
-    @Override
-    public String toString() {
-	return "IndustryTeams [items=" + items + ", getTotalCount()=" + getTotalCount() + ", getPageCount()="
-		+ getPageCount() + "]";
-    }
-
+public class IndustryTeams extends ContainerType<IndustryTeam> implements Serializable {
+    private static final long serialVersionUID = -7964131638570164592L;
 }

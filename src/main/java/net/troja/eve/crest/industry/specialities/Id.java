@@ -1,6 +1,10 @@
 package net.troja.eve.crest.industry.specialities;
 
-public class Id {
+import java.io.Serializable;
+
+public class Id implements Serializable {
+    private static final long serialVersionUID = 8298981713160356328L;
+
     private int id;
 
     public int getId() {

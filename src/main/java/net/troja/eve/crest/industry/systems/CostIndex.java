@@ -1,6 +1,10 @@
 package net.troja.eve.crest.industry.systems;
 
-public class CostIndex {
+import java.io.Serializable;
+
+public class CostIndex implements Serializable {
+    private static final long serialVersionUID = 4359370790615315807L;
+
     private double costIndex;
     private int activityID;
     private String activityName;
