@@ -14,7 +14,9 @@ public class IndustrySpecialitiesParser extends PublicParser<IndustrySpecialitie
     public Map<Integer, IndustrySpeciality> getDataAsMap() {
 	final IndustrySpecialities data = getData();
 	final Map<Integer, IndustrySpeciality> map = new HashMap<>();
-	for(final IndustrySpeciality spec : data.getItems()) {
+	if (data == null)
+	    return map;
+	for (final IndustrySpeciality spec : data.getItems()) {
 	    map.put(spec.getId(), spec);
 	}
 	return map;

@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.ParameterizedType;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -22,6 +25,7 @@ public abstract class PublicParser<T extends ContainerType<?>> {
     protected long cachedAt = 0;
     protected ObjectMapper mapper;
     private T cachedData = null;
+    private String fileName = null;
 
     public PublicParser() {
 	super();
@@ -38,8 +42,8 @@ public abstract class PublicParser<T extends ContainerType<?>> {
 	    String data = null;
 	    try {
 		data = getData(getPath());
-		cachedData = mapper.readValue(data, (Class<T>) ((ParameterizedType) getClass()
-			.getGenericSuperclass()).getActualTypeArguments()[0]);
+		cachedData = mapper.readValue(data,
+			(Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
 		updateCachedAt();
 	    } catch (final IOException e) {
 		LOGGER.error("Could not download " + name, e);
@@ -59,16 +63,28 @@ public abstract class PublicParser<T extends ContainerType<?>> {
     }
 
     protected String getData(final String path) throws IOException {
-	final URL url = new URL(API_URL + path);
-	final StringWriter writer = new StringWriter();
-	final String encoding = "UTF-8";
-	IOUtils.copy(url.openConnection().getInputStream(), writer, encoding);
-	return writer.toString();
+	if (fileName == null) {
+	    final URL url = new URL(API_URL + path);
+	    final StringWriter writer = new StringWriter();
+	    final String encoding = "UTF-8";
+	    IOUtils.copy(url.openConnection().getInputStream(), writer, encoding);
+	    return writer.toString();
+	} else
+	    return new String(Files.readAllBytes(Paths.get(fileName)));
+    }
+
+    public void writeRawData(final String fileName) throws IOException {
+	final Path target = Paths.get(fileName);
+	Files.write(target, getData(getPath()).getBytes());
+    }
+
+    public void setDummyDataFile(final String fileName) {
+	this.fileName = fileName;
     }
 
     protected String getPrettyString(final String data) throws JsonParseException, JsonMappingException, IOException {
 	final Object json = mapper.readValue(data, Object.class);
-	return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json).substring(0, 5000);
+	return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
     }
 
     protected void updateCachedAt() {

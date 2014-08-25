@@ -16,6 +16,8 @@ public class IndustryTeamsParser extends PublicParser<IndustryTeams> {
     public Map<String, List<IndustryTeam>> getDataAsMap() {
 	final IndustryTeams data = getData();
 	final Map<String, List<IndustryTeam>> map = new HashMap<>();
+	if (data == null)
+	    return map;
 	for(final IndustryTeam team : data.getItems()) {
 	    final String solarSystem = team.getSolarSystem().getName();
 	    List<IndustryTeam> teams = map.get(solarSystem);
