@@ -12,7 +12,7 @@ public class IndustryTeamsParserTest {
 	final IndustryTeamsParser parser = new IndustryTeamsParser();
 	parser.setDummyDataFile(LIVE_DATA);
 	final IndustryTeams data = parser.getData();
-	assertEquals(4742, data.getTotalCount());
+	assertEquals(4781, data.getTotalCount());
 	assertEquals(data.getTotalCount(), data.getItems().size());
     }
 }
