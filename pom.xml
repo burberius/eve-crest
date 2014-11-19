@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.troja.eve</groupId>
 	<artifactId>crest</artifactId>
-	<version>0.0.6-SNAPSHOT</version>
+	<version>0.0.7-SNAPSHOT</version>
 	<name>Library for the Eve Online CREST API</name>
 
 	<properties>

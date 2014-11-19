@@ -12,7 +12,7 @@ public class IndustryFacilitiesParserTest {
 	final IndustryFacilitiesParser parser = new IndustryFacilitiesParser();
 	parser.setDummyDataFile(LIVE_DATA);
 	final IndustryFacilities data = parser.getData();
-	assertEquals(142, data.getTotalCount());
+	assertEquals(6187, data.getTotalCount());
 	assertEquals(data.getTotalCount(), data.getItems().size());
     }
 }
