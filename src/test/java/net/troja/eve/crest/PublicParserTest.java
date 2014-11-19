@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class PublicParserTest {
+    @SuppressWarnings("rawtypes")
     private final PublicParser classToTest = new PublicParser() {
 
 	@Override
@@ -13,6 +14,7 @@ public class PublicParserTest {
 	}
     };
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testCaching() {
 	classToTest.cachedAt = System.currentTimeMillis() - (60 * 60 * 1000) - 5;
