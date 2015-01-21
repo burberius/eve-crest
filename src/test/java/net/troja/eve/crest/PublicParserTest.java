@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class PublicParserTest {
     @SuppressWarnings("rawtypes")
-    private final PublicParser classToTest = new PublicParser() {
+    private final PublicContainerParser<?,?> classToTest = new PublicContainerParser() {
 
 	@Override
 	protected String getPath() {
@@ -14,7 +14,6 @@ public class PublicParserTest {
 	}
     };
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testCaching() {
 	classToTest.cachedAt = System.currentTimeMillis() - (60 * 60 * 1000) - 5;

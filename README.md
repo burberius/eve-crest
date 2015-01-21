@@ -13,5 +13,4 @@ mvn clean test -Donline=true
 
 ToDo
 ----
-* Change to a more robust and flexible HTTP client library
-* Add client header to be identified by CCP
+* Add rest of calls

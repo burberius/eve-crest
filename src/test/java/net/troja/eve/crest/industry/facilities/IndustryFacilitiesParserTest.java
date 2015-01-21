@@ -15,9 +15,9 @@ public class IndustryFacilitiesParserTest {
 	final IndustryFacilitiesParser parser = new IndustryFacilitiesParser();
 	parser.setDummyDataFile(LIVE_DATA);
 	final IndustryFacilities data = parser.getData();
-	assertEquals(6187, data.getTotalCount());
+	assertEquals(6207, data.getTotalCount());
 	assertEquals(data.getTotalCount(), data.getItems().size());
-	IndustryFacility facility = data.getItems().get(0);
+	final IndustryFacility facility = data.getItems().get(0);
 	assertThat(facility.getName(), notNullValue());
 	assertThat(facility.getSolarSystem(), notNullValue());
 	assertThat(facility.getSolarSystem().getId(), greaterThan(0l));

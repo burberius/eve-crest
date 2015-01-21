@@ -1,8 +1,8 @@
 package net.troja.eve.crest.market.prices;
 
-import net.troja.eve.crest.PublicParser;
+import net.troja.eve.crest.PublicContainerParser;
 
-public class MarketPricesParser extends PublicParser<MarketPrices> {
+public class MarketPricesParser extends PublicContainerParser<MarketPrices, MarketPrice> {
     public MarketPricesParser() {
 	cacheDuration = 24;
     }

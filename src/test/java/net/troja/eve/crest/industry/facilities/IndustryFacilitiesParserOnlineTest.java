@@ -11,7 +11,7 @@ public class IndustryFacilitiesParserOnlineTest {
     public void testGetDataOnlineAndStoreThem() {
 	final IndustryFacilitiesParser parser = new IndustryFacilitiesParser();
 	final IndustryFacilities data = parser.getData();
-	assertEquals(6187, data.getTotalCount());
+	assertEquals(6207, data.getTotalCount());
 	assertEquals(data.getTotalCount(), data.getItems().size());
 
 	try {

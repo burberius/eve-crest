@@ -3,9 +3,9 @@ package net.troja.eve.crest.industry.specialities;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.troja.eve.crest.PublicParser;
+import net.troja.eve.crest.PublicContainerParser;
 
-public class IndustrySpecialitiesParser extends PublicParser<IndustrySpecialities> {
+public class IndustrySpecialitiesParser extends PublicContainerParser<IndustrySpecialities, IndustrySpeciality> {
     @Override
     protected String getPath() {
 	return "/industry/specialities/";

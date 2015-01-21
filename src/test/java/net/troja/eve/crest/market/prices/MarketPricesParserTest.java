@@ -12,7 +12,7 @@ public class MarketPricesParserTest {
 	final MarketPricesParser parser = new MarketPricesParser();
 	parser.setDummyDataFile(LIVE_DATA);
 	final MarketPrices data = parser.getData();
-	assertEquals(9454, data.getTotalCount());
+	assertEquals(9632, data.getTotalCount());
 	assertEquals(data.getTotalCount(), data.getItems().size());
     }
 }
