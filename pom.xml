@@ -79,7 +79,7 @@
 
 	<profiles>
 		<profile>
-			<!-- This profile will be used when running tests without a device -->
+			<!-- This profile will be used when running tests without needing to be online -->
 			<id>default-profile</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
