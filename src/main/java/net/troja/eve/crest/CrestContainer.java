@@ -1,4 +1,4 @@
-package net.troja.eve.crest.itemtypes;
+package net.troja.eve.crest;
 
 /*
  * ========================================================================
@@ -9,9 +9,9 @@ package net.troja.eve.crest.itemtypes;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,38 +20,39 @@ package net.troja.eve.crest.itemtypes;
  * ========================================================================
  */
 
-public class ItemType {
-    private int id;
-    private String name;
+import java.util.ArrayList;
+import java.util.List;
 
-    public ItemType() {
-        super();
+public class CrestContainer<T> {
+    private List<T> entries = new ArrayList<>();
+    private int totalCount;
+    private int pageCount;
+
+    public List<T> getEntries() {
+        return entries;
     }
 
-    public ItemType(final int id, final String name) {
-        super();
-        this.id = id;
-        this.name = name;
+    public void setEntries(final List<T> entries) {
+        this.entries = entries;
     }
 
-    public int getId() {
-        return id;
+    public void addEntry(final T entry) {
+        entries.add(entry);
     }
 
-    public void setId(final int id) {
-        this.id = id;
+    public int getTotalCount() {
+        return totalCount;
     }
 
-    public String getName() {
-        return name;
+    public void setTotalCount(final int totalCount) {
+        this.totalCount = totalCount;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public int getPageCount() {
+        return pageCount;
     }
 
-    @Override
-    public String toString() {
-        return "ItemType [id=" + id + ", name=" + name + "]";
+    public void setPageCount(final int pageCount) {
+        this.pageCount = pageCount;
     }
 }

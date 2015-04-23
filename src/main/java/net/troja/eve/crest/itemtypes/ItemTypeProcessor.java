@@ -9,9 +9,9 @@ package net.troja.eve.crest.itemtypes;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,38 +20,25 @@ package net.troja.eve.crest.itemtypes;
  * ========================================================================
  */
 
-public class ItemType {
-    private int id;
-    private String name;
+import net.troja.eve.crest.CrestApiProcessor;
 
-    public ItemType() {
-        super();
-    }
+import com.fasterxml.jackson.databind.JsonNode;
 
-    public ItemType(final int id, final String name) {
-        super();
-        this.id = id;
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(final int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
+public class ItemTypeProcessor implements CrestApiProcessor<ItemType> {
+    @Override
+    public boolean isPaged() {
+        return true;
     }
 
     @Override
-    public String toString() {
-        return "ItemType [id=" + id + ", name=" + name + "]";
+    public String getPath() {
+        return "/types/";
+    }
+
+    @Override
+    public ItemType parseEntry(final JsonNode node) {
+        final String href = node.path(PATH_HREF).asText();
+        final int id = Integer.parseInt(href.replaceAll(".*/([0-9]+)/$", "$1"));
+        return new ItemType(id, node.path(PATH_NAME).asText());
     }
 }

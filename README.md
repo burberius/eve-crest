@@ -14,3 +14,7 @@ mvn clean test -Donline=true
 ToDo
 ----
 * Add rest of calls
+
+Documentation
+-------------
+* https://wiki.eveonline.com/en/wiki/CREST_Getting_Started
