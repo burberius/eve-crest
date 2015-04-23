@@ -1,5 +1,25 @@
 package net.troja.eve.crest;
 
+/*
+ * ========================================================================
+ * Library for the Eve Online CREST API
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2014 - 2015 Jens Oberender <j.obi@troja.net>
+ * ------------------------------------------------------------------------
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ========================================================================
+ */
+
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.nio.file.Files;
@@ -32,73 +52,75 @@ public abstract class PublicParser<T> {
 
     @SuppressWarnings("unchecked")
     public T getData(final int id) {
-	final String name = this.getClass().getSimpleName().replace("Parser", "");
-	LOGGER.info("Getting " + name + " data for id " + id);
-	String data = null;
-	try {
-	    data = getData(getPath() + id + "/");
-	    return mapper.readValue(data,
-		    (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
-	} catch (final IOException e) {
-	    LOGGER.error("Could not download " + name, e);
-	    if (data != null) {
-		try {
-		    System.out.println(getPrettyString(data));
-		} catch (final JsonParseException e1) {
-		} catch (final JsonMappingException e1) {
-		} catch (final IOException e1) {
-		}
-	    }
-	    return null;
-	}
+        final String name = this.getClass().getSimpleName().replace("Parser", "");
+        LOGGER.info("Getting " + name + " data for id " + id);
+        String data = null;
+        try {
+            data = getData(getPath() + id + "/");
+            return mapper.readValue(data, (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+        } catch (final IOException e) {
+            LOGGER.error("Could not download " + name, e);
+            if (data != null) {
+                try {
+                    System.out.println(getPrettyString(data));
+                } catch (final JsonParseException e1) {
+                } catch (final JsonMappingException e1) {
+                } catch (final IOException e1) {
+                }
+            }
+            return null;
+        }
     }
 
     protected String getData(final String path) throws IOException {
-	if (fileName == null) {
-	    final CloseableHttpClient httpclient = HttpClients.createDefault();
-	    try {
-		final HttpGet request = new HttpGet(API_URL + path);
-		request.setHeader("User-Agent", userAgent);
-		final HttpResponse response = httpclient.execute(request);
-		final int status = response.getStatusLine().getStatusCode();
-		if ((status >= 200) && (status < 300)) {
-		    final HttpEntity entity = response.getEntity();
-		    return entity != null ? EntityUtils.toString(entity) : null;
-		} else
-		    return null;
-	    } finally {
-		httpclient.close();
-	    }
-	} else
-	    return new String(Files.readAllBytes(Paths.get(fileName)));
+        if (fileName == null) {
+            final CloseableHttpClient httpclient = HttpClients.createDefault();
+            try {
+                final HttpGet request = new HttpGet(API_URL + path);
+                request.setHeader("User-Agent", userAgent);
+                final HttpResponse response = httpclient.execute(request);
+                final int status = response.getStatusLine().getStatusCode();
+                if ((status >= 200) && (status < 300)) {
+                    final HttpEntity entity = response.getEntity();
+                    return entity != null ? EntityUtils.toString(entity) : null;
+                } else {
+                    return null;
+                }
+            } finally {
+                httpclient.close();
+            }
+        } else {
+            return new String(Files.readAllBytes(Paths.get(fileName)));
+        }
     }
 
     public void setUserAgent(final String userAgent) {
-	this.userAgent = userAgent;
+        this.userAgent = userAgent;
     }
 
     public void writeRawData(final String fileName) throws IOException {
-	final Path target = Paths.get(fileName);
-	Files.write(target, getData(getPath()).getBytes());
+        final Path target = Paths.get(fileName);
+        Files.write(target, getData(getPath()).getBytes());
     }
 
     public void setDummyDataFile(final String fileName) {
-	this.fileName = fileName;
+        this.fileName = fileName;
     }
 
     protected String getPrettyString(final String data) throws JsonParseException, JsonMappingException, IOException {
-	final Object json = mapper.readValue(data, Object.class);
-	return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+        final Object json = mapper.readValue(data, Object.class);
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
     }
 
     protected void updateCachedAt() {
-	cachedAt = System.currentTimeMillis();
+        cachedAt = System.currentTimeMillis();
     }
 
     protected boolean isOutdated() {
-	if ((System.currentTimeMillis() - cachedAt) > (cacheDuration * 60 * 60 * 1000))
-	    return true;
-	return false;
+        if ((System.currentTimeMillis() - cachedAt) > (cacheDuration * 60 * 60 * 1000)) {
+            return true;
+        }
+        return false;
     }
 
     protected abstract String getPath();
