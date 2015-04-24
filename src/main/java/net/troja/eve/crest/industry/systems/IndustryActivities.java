@@ -20,10 +20,10 @@ package net.troja.eve.crest.industry.systems;
  * ========================================================================
  */
 
-import java.io.Serializable;
-
-import net.troja.eve.crest.ContainerType;
-
-public class IndustrySystems extends ContainerType<IndustrySystem> implements Serializable {
-    private static final long serialVersionUID = -883115237616161058L;
+public interface IndustryActivities {
+    int Manufacturing = 1;
+    int ResearchingTimeEfficiency = 3;
+    int ResearchingMaterialEfficiency = 4;
+    int Copying = 5;
+    int Invention = 8;
 }

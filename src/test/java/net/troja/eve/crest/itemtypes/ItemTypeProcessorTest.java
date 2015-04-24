@@ -21,7 +21,6 @@ package net.troja.eve.crest.itemtypes;
  */
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -41,7 +40,7 @@ public class ItemTypeProcessorTest extends CrestApiProcessorTest {
         final JsonNode node = loadAndParseData("ItemType.json");
         final ItemType type = processor.parseEntry(node);
 
-        assertThat(type.getId(), is(equalTo(2200)));
-        assertThat(type.getName(), is(equalTo("Crate of Prototype Body Armor Fabric ")));
+        assertThat(type.getId(), equalTo(2200));
+        assertThat(type.getName(), equalTo("Crate of Prototype Body Armor Fabric "));
     }
 }

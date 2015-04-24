@@ -20,35 +20,82 @@ package net.troja.eve.crest.industry.systems;
  * ========================================================================
  */
 
-import java.io.Serializable;
-import java.util.List;
 
-import net.troja.eve.crest.GeneralType;
+public class IndustrySystem {
+    private int solarSystemId;
+    private String solarSystemName;
+    private double manufacturingCostIndex;
+    private double researchingTimeEfficiencyCostIndex;
+    private double researchingMaterialEfficiencyCostIndex;
+    private double copyingCostIndex;
+    private double inventionCostIndex;
 
-public class IndustrySystem implements Serializable {
-    private static final long serialVersionUID = 5467636267727502281L;
-
-    private List<CostIndex> systemCostIndices;
-    private GeneralType solarSystem;
-
-    public List<CostIndex> getSystemCostIndices() {
-        return systemCostIndices;
+    public IndustrySystem(final int solarSystemId, final String solarSystemName) {
+        this.solarSystemId = solarSystemId;
+        this.solarSystemName = solarSystemName;
     }
 
-    public void setSystemCostIndices(final List<CostIndex> systemCostIndices) {
-        this.systemCostIndices = systemCostIndices;
+    public int getSolarSystemId() {
+        return solarSystemId;
     }
 
-    public GeneralType getSolarSystem() {
-        return solarSystem;
+    public void setSolarSystemId(final int solarSystemId) {
+        this.solarSystemId = solarSystemId;
     }
 
-    public void setSolarSystem(final GeneralType solarSystem) {
-        this.solarSystem = solarSystem;
+    public String getSolarSystemName() {
+        return solarSystemName;
+    }
+
+    public void setSolarSystemName(final String solarSystemName) {
+        this.solarSystemName = solarSystemName;
+    }
+
+    public double getManufacturingCostIndex() {
+        return manufacturingCostIndex;
+    }
+
+    public void setManufacturingCostIndex(final double manufacturingCostIndex) {
+        this.manufacturingCostIndex = manufacturingCostIndex;
+    }
+
+    public double getResearchingTimeEfficiencyCostIndex() {
+        return researchingTimeEfficiencyCostIndex;
+    }
+
+    public void setResearchingTimeEfficiencyCostIndex(final double researchingTimeEfficiencyCostIndex) {
+        this.researchingTimeEfficiencyCostIndex = researchingTimeEfficiencyCostIndex;
+    }
+
+    public double getResearchingMaterialEfficiencyCostIndex() {
+        return researchingMaterialEfficiencyCostIndex;
+    }
+
+    public void setResearchingMaterialEfficiencyCostIndex(final double researchingMaterialEfficiencyCostIndex) {
+        this.researchingMaterialEfficiencyCostIndex = researchingMaterialEfficiencyCostIndex;
+    }
+
+    public double getCopyingCostIndex() {
+        return copyingCostIndex;
+    }
+
+    public void setCopyingCostIndex(final double copyingCostIndex) {
+        this.copyingCostIndex = copyingCostIndex;
+    }
+
+    public double getInventionCostIndex() {
+        return inventionCostIndex;
+    }
+
+    public void setInventionCostIndex(final double inventionCostIndex) {
+        this.inventionCostIndex = inventionCostIndex;
     }
 
     @Override
     public String toString() {
-        return "System [systemCostIndices=" + systemCostIndices + ", solarSystem=" + solarSystem + "]";
+        return "IndustrySystem [solarSystemId=" + solarSystemId + ", solarSystemName=" + solarSystemName + ", manufacturingCostIndex="
+                + manufacturingCostIndex + ", researchingTimeEfficiencyCostIndex=" + researchingTimeEfficiencyCostIndex
+                + ", researchingMaterialEfficiencyCostIndex=" + researchingMaterialEfficiencyCostIndex + ", copyingCostIndex=" + copyingCostIndex
+                + ", inventionCostIndex=" + inventionCostIndex + "]";
     }
 }

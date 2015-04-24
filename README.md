@@ -7,7 +7,7 @@ Implemented Endpoints
 ---------------------
 * Item types - "/types/"
 * Market Prices - "/market/prices/"
-
+* Industry Systems Cost Index - "/industry/systems/"
 
 Unit Tests
 ----------
@@ -21,6 +21,7 @@ ToDo
 ----
 * Add rest of calls
 * Get Description for ItemTypes
+* SolarSystems - "/solarsystems/XXXXX/"
 
 Documentation
 -------------
