@@ -3,6 +3,12 @@ eve-crest
 
 Library for the Eve Online CREST API
 
+Implemented Endpoints
+---------------------
+* Item types - "/types/"
+* Market Prices - "/market/prices/"
+
+
 Unit Tests
 ----------
 The default unit tests are offline against some data downloaded from the API.
@@ -14,6 +20,7 @@ mvn clean test -Donline=true
 ToDo
 ----
 * Add rest of calls
+* Get Description for ItemTypes
 
 Documentation
 -------------

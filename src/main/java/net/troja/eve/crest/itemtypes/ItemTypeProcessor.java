@@ -26,11 +26,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class ItemTypeProcessor implements CrestApiProcessor<ItemType> {
     @Override
-    public boolean isPaged() {
-        return true;
-    }
-
-    @Override
     public String getPath() {
         return "/types/";
     }

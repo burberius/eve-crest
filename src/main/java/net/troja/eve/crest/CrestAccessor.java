@@ -9,9 +9,9 @@ package net.troja.eve.crest;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,10 +38,10 @@ public class CrestAccessor {
 
     protected String userAgent = USER_AGENT + getClass().getPackage().getImplementationVersion();
 
-    public String getData(final String path) throws IOException {
+    public String getDataPage(final String address) throws IOException {
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
-            final HttpGet request = new HttpGet(API_URL + path);
+            final HttpGet request = new HttpGet(address);
             request.setHeader("User-Agent", userAgent);
             final HttpResponse response = httpclient.execute(request);
             final int status = response.getStatusLine().getStatusCode();
@@ -56,8 +56,7 @@ public class CrestAccessor {
         }
     }
 
-    public String getDataPage(final String path, final Integer page) throws IOException {
-        final String pathExtension = page != null ? "?page=" + page : "";
-        return getData(path + pathExtension);
+    public String getData(final String path) throws IOException {
+        return getDataPage(API_URL + path);
     }
 }

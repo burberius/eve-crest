@@ -9,9 +9,9 @@ package net.troja.eve.crest;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,41 +20,25 @@ package net.troja.eve.crest;
  * ========================================================================
  */
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.InputStream;
 
-public class GeneralType implements Serializable {
-    private static final long serialVersionUID = 8952654062451756797L;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-    private String href;
-    private int id;
-    private String name;
+public class CrestApiProcessorTest {
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    public String getHref() {
-        return href;
-    }
-
-    public void setHref(final String href) {
-        this.href = href;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(final int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "ItemType [href=" + href + ", id=" + id + ", name=" + name + "]";
+    protected JsonNode loadAndParseData(final String fileName) throws JsonProcessingException, IOException {
+        InputStream in = null;
+        try {
+            in = getClass().getResourceAsStream("/" + fileName);
+            return mapper.readTree(in);
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
     }
 }

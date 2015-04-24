@@ -9,9 +9,9 @@ package net.troja.eve.crest.market.prices;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,30 +20,28 @@ package net.troja.eve.crest.market.prices;
  * ========================================================================
  */
 
-import java.util.HashMap;
-import java.util.Map;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
-import net.troja.eve.crest.PublicContainerParser;
+import java.io.IOException;
 
-public class MarketPricesParser extends PublicContainerParser<MarketPrices, MarketPrice> {
-    public MarketPricesParser() {
-        cacheDuration = 24;
-    }
+import net.troja.eve.crest.CrestApiProcessorTest;
 
-    @Override
-    protected String getPath() {
-        return "/market/prices/";
-    }
+import org.junit.Test;
 
-    public Map<Integer, Double> getDataAsMap() {
-        final MarketPrices data = getData();
-        final Map<Integer, Double> map = new HashMap<>();
-        if (data == null) {
-            return map;
-        }
-        for (final MarketPrice price : data.getItems()) {
-            map.put(price.getType().getId(), price.getAdjustedPrice());
-        }
-        return map;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+
+public class MarketPriceProcessorTest extends CrestApiProcessorTest {
+    @Test
+    public void testParsing() throws JsonProcessingException, IOException {
+        final MarketPriceProcessor processor = new MarketPriceProcessor();
+
+        final JsonNode node = loadAndParseData("MarketPrice.json");
+        final MarketPrice price = processor.parseEntry(node);
+
+        assertThat(price.getTypeId(), equalTo(32772));
+        assertThat(price.getAdjustedPrice(), equalTo(152720.94));
+        assertThat(price.getAveragePrice(), equalTo(150736.13));
     }
 }

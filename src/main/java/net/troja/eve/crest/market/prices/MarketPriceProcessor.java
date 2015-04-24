@@ -1,4 +1,4 @@
-package net.troja.eve.crest;
+package net.troja.eve.crest.market.prices;
 
 /*
  * ========================================================================
@@ -9,9 +9,9 @@ package net.troja.eve.crest;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,23 +20,21 @@ package net.troja.eve.crest;
  * ========================================================================
  */
 
-import java.io.Serializable;
+import net.troja.eve.crest.CrestApiProcessor;
 
-public class IdType implements Serializable {
-    private static final long serialVersionUID = -261253619607021341L;
+import com.fasterxml.jackson.databind.JsonNode;
 
-    private long id;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(final long id) {
-        this.id = id;
+public class MarketPriceProcessor implements CrestApiProcessor<MarketPrice> {
+    @Override
+    public String getPath() {
+        return "/market/prices/";
     }
 
     @Override
-    public String toString() {
-        return "IdType [id=" + id + "]";
+    public MarketPrice parseEntry(final JsonNode node) {
+        final double adjustedPrice = node.path(PATH_ADJUSTEDPRICE).asDouble();
+        final double averagePrice = node.path(PATH_AVERAGEPRICE).asDouble();
+        final int typeId = node.path(PATH_TYPE).path(PATH_ID).asInt();
+        return new MarketPrice(typeId, adjustedPrice, averagePrice);
     }
 }
