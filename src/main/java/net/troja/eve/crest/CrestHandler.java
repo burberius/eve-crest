@@ -20,6 +20,14 @@ package net.troja.eve.crest;
  * ========================================================================
  */
 
+import java.util.HashMap;
+import java.util.Map;
+
+import net.troja.eve.crest.itemtypes.ItemType;
+import net.troja.eve.crest.itemtypes.ItemTypeProcessor;
+import net.troja.eve.crest.market.prices.MarketPrice;
+import net.troja.eve.crest.market.prices.MarketPriceProcessor;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +35,28 @@ public class CrestHandler {
     private static final Logger LOGGER = LogManager.getLogger(CrestHandler.class);
     private final CrestDataProcessor processor = new CrestDataProcessor();
 
-    public CrestHandler() {
+    private static final CrestHandler instance = new CrestHandler();
 
+    private final Map<Integer, String> itemTypes = new HashMap<>();
+
+    private CrestHandler() {
+        // Static data
+        final CrestContainer<ItemType> itemTypeContainer = processor.downloadAndProcessData(new ItemTypeProcessor());
+        for (final ItemType itemType : itemTypeContainer.getEntries()) {
+            itemTypes.put(itemType.getId(), itemType.getName());
+        }
+        updateData();
+    }
+
+    public static CrestHandler getInstance() {
+        return instance;
+    }
+
+    private void updateData() {
+        final CrestContainer<MarketPrice> marketPriceContainer = processor.downloadAndProcessData(new MarketPriceProcessor());
+    }
+
+    public String getItemName(final int id) {
+        return itemTypes.get(id);
     }
 }

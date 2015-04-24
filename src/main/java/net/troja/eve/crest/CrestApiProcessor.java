@@ -33,6 +33,10 @@ public interface CrestApiProcessor<T> {
     static String PATH_SYSTEMCOSTINDICES = "systemCostIndices";
     static String PATH_COSTINDEX = "costIndex";
     static String PATH_ACTIVITYID = "activityID";
+    static String PATH_FACILITYID = "facilityID";
+    static String PATH_REGION = "region";
+    static String PATH_TAX = "tax";
+    static String PATH_OWNER = "owner";
 
     String getPath();
 

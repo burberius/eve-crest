@@ -20,29 +20,35 @@ package net.troja.eve.crest.industry.facilities;
  * ========================================================================
  */
 
-import java.io.Serializable;
 
-import net.troja.eve.crest.IdType;
-
-public class IndustryFacility implements Serializable {
-    private static final long serialVersionUID = -1817751027149221431L;
-
-    private long facilityID;
+public class IndustryFacility {
+    private int facilityId;
     private String name;
-    private double tax;
-    private IdType solarSystem;
-    private IdType region;
-    private IdType owner;
-    private IdType type;
+    private float tax;
+    private int solarSystemId;
+    private int regionId;
+    private long ownerId;
+    private int typeId;
 
-    public long getFacilityID() {
-        return facilityID;
+    public IndustryFacility(final int facilityId, final String name, final float tax, final int solarSystemId, final int regionId,
+            final long ownerId, final int typeId) {
+        super();
+        this.facilityId = facilityId;
+        this.name = name;
+        this.tax = tax;
+        this.solarSystemId = solarSystemId;
+        this.regionId = regionId;
+        this.ownerId = ownerId;
+        this.typeId = typeId;
     }
 
-    public void setFacilityID(final long facilityID) {
-        this.facilityID = facilityID;
+    public int getFacilityId() {
+        return facilityId;
     }
 
+    public void setFacilityId(final int facilityId) {
+        this.facilityId = facilityId;
+    }
     public String getName() {
         return name;
     }
@@ -51,49 +57,49 @@ public class IndustryFacility implements Serializable {
         this.name = name;
     }
 
-    public double getTax() {
+    public float getTax() {
         return tax;
     }
 
-    public void setTax(final double tax) {
+    public void setTax(final float tax) {
         this.tax = tax;
     }
 
-    public IdType getSolarSystem() {
-        return solarSystem;
+    public int getSolarSystemId() {
+        return solarSystemId;
     }
 
-    public void setSolarSystem(final IdType solarSystem) {
-        this.solarSystem = solarSystem;
+    public void setSolarSystemId(final int solarSystemId) {
+        this.solarSystemId = solarSystemId;
     }
 
-    public IdType getRegion() {
-        return region;
+    public int getRegionId() {
+        return regionId;
     }
 
-    public void setRegion(final IdType region) {
-        this.region = region;
+    public void setRegionId(final int regionId) {
+        this.regionId = regionId;
     }
 
-    public IdType getOwner() {
-        return owner;
+    public long getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(final IdType owner) {
-        this.owner = owner;
+    public void setOwnerId(final long ownerId) {
+        this.ownerId = ownerId;
     }
 
-    public IdType getType() {
-        return type;
+    public int getTypeId() {
+        return typeId;
     }
 
-    public void setType(final IdType type) {
-        this.type = type;
+    public void setTypeId(final int typeId) {
+        this.typeId = typeId;
     }
 
     @Override
     public String toString() {
-        return "IndustryFacility [facilityID=" + facilityID + ", name=" + name + ", tax=" + tax + ", solarSystem=" + solarSystem + ", region="
-                + region + ", owner=" + owner + ", type=" + type + "]";
+        return "IndustryFacility [facilityId=" + facilityId + ", name=" + name + ", tax=" + tax + ", solarSystemId=" + solarSystemId + ", regionId="
+                + regionId + ", ownerId=" + ownerId + ", typeId=" + typeId + "]";
     }
 }

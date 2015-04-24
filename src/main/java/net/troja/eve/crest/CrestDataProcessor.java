@@ -9,9 +9,9 @@ package net.troja.eve.crest;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,9 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -59,6 +57,9 @@ public class CrestDataProcessor {
                 data = accessor.getDataPage(next);
                 next = processData(processor, container, data);
             }
+        } catch (final DataProcessingException e) {
+            LOGGER.error("Could not process data", e);
+            return null;
         } catch (final IOException e) {
             LOGGER.error("Could not download data", e);
             return null;
@@ -66,40 +67,47 @@ public class CrestDataProcessor {
         return container;
     }
 
-    private <T> String processData(final CrestApiProcessor<T> processor, final CrestContainer<T> container, final String data) throws IOException,
-    JsonParseException, JsonProcessingException {
+    private <T> String processData(final CrestApiProcessor<T> processor, final CrestContainer<T> container, final String data)
+            throws DataProcessingException {
+        if ((data == null) || (data.trim().length() == 0)) {
+            throw new DataProcessingException("No data to parse");
+        }
         String next = null;
-        final JsonFactory parserFactory = new JsonFactory();
-        final JsonParser jsonParser = parserFactory.createParser(data);
-        jsonParser.nextToken();
-        while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
-            final String fieldname = jsonParser.getCurrentName();
+        try {
+            final JsonFactory parserFactory = new JsonFactory();
+            final JsonParser jsonParser = parserFactory.createParser(data);
             jsonParser.nextToken();
-            switch (fieldname) {
-                case "totalCount":
-                    container.setTotalCount(jsonParser.getIntValue());
-                    break;
-                case "pageCount":
-                    container.setPageCount(jsonParser.getIntValue());
-                    break;
-                case "items":
-                    if (jsonParser.isExpectedStartArrayToken()) {
-                        while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
-                            container.addEntry(processor.parseEntry((JsonNode) mapper.readTree(jsonParser)));
-                        }
-                    }
-                    break;
-                case "next":
-                    jsonParser.nextToken();
-                    if (!CrestApiProcessor.PATH_HREF.equals(jsonParser.getCurrentName())) {
+            while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
+                final String fieldname = jsonParser.getCurrentName();
+                jsonParser.nextToken();
+                switch (fieldname) {
+                    case "totalCount":
+                        container.setTotalCount(jsonParser.getIntValue());
                         break;
-                    }
-                    jsonParser.nextToken();
-                    next = jsonParser.getText();
-                    jsonParser.nextToken();
-                default:
-                    break;
+                    case "pageCount":
+                        container.setPageCount(jsonParser.getIntValue());
+                        break;
+                    case "items":
+                        if (jsonParser.isExpectedStartArrayToken()) {
+                            while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
+                                container.addEntry(processor.parseEntry((JsonNode) mapper.readTree(jsonParser)));
+                            }
+                        }
+                        break;
+                    case "next":
+                        jsonParser.nextToken();
+                        if (!CrestApiProcessor.PATH_HREF.equals(jsonParser.getCurrentName())) {
+                            break;
+                        }
+                        jsonParser.nextToken();
+                        next = jsonParser.getText();
+                        jsonParser.nextToken();
+                    default:
+                        break;
+                }
             }
+        } catch (final IOException e) {
+            throw new DataProcessingException("Problems while parsing json data", e);
         }
         return next;
     }
