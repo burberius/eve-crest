@@ -3,6 +3,8 @@ eve-crest
 
 Library for the Eve Online CREST API
 
+[![Build Status](http://didge.my-wan.de/jenkins/job/GitHub%20eve-crest/badge/icon)](http://didge.my-wan.de/jenkins/job/GitHub%20eve-crest/)
+
 Implemented Endpoints
 ---------------------
 * Item types - "/types/"
