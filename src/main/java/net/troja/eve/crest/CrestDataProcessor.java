@@ -96,7 +96,7 @@ public class CrestDataProcessor {
                         break;
                     case "next":
                         jsonParser.nextToken();
-                        if (!CrestApiProcessor.PATH_HREF.equals(jsonParser.getCurrentName())) {
+                        if (!JsonPaths.HREF.equals(jsonParser.getCurrentName())) {
                             break;
                         }
                         jsonParser.nextToken();

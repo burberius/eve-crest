@@ -24,6 +24,8 @@ import java.io.IOException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -32,26 +34,44 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class CrestAccessor {
-    protected static final Logger LOGGER = LogManager.getLogger(CrestAccessor.class);
-    protected static final String API_URL = "http://public-crest.eveonline.com";
-    protected static final String USER_AGENT = "eve-crest Java library - https://github.com/burberius/eve-crest - ";
+    private static final Logger LOGGER = LogManager.getLogger(CrestAccessor.class);
+    private static final String API_URL = "http://public-crest.eveonline.com";
+    private static final String USER_AGENT = "eve-crest Java library - https://github.com/burberius/eve-crest - ";
 
-    protected String userAgent = USER_AGENT + getClass().getPackage().getImplementationVersion();
+    private String userAgent = USER_AGENT + getClass().getPackage().getImplementationVersion();
+
+    public CrestAccessor() {
+        super();
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(final String userAgent) {
+        this.userAgent = userAgent;
+    }
 
     public String getDataPage(final String address) throws IOException {
         final CloseableHttpClient httpclient = HttpClients.createDefault();
+        final HttpGet request = new HttpGet(address);
         try {
-            final HttpGet request = new HttpGet(address);
             request.setHeader("User-Agent", userAgent);
             final HttpResponse response = httpclient.execute(request);
-            final int status = response.getStatusLine().getStatusCode();
-            if ((status >= 200) && (status < 300)) {
+            final StatusLine statusLine = response.getStatusLine();
+            final int status = statusLine.getStatusCode();
+            if ((status >= HttpStatus.SC_OK) && (status < HttpStatus.SC_MULTIPLE_CHOICES)) {
                 final HttpEntity entity = response.getEntity();
-                return entity != null ? EntityUtils.toString(entity) : null;
+                if (entity == null) {
+                    return null;
+                }
+                return EntityUtils.toString(entity);
             } else {
+                LOGGER.warn("Got " + status + " for the query " + address);
                 return null;
             }
         } finally {
+            request.reset();
             httpclient.close();
         }
     }

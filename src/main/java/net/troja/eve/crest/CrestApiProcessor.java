@@ -23,21 +23,6 @@ package net.troja.eve.crest;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public interface CrestApiProcessor<T> {
-    static String PATH_HREF = "href";
-    static String PATH_NAME = "name";
-    static String PATH_TYPE = "type";
-    static String PATH_ID = "id";
-    static String PATH_ADJUSTEDPRICE = "adjustedPrice";
-    static String PATH_AVERAGEPRICE = "averagePrice";
-    static String PATH_SOLARSYSTEM = "solarSystem";
-    static String PATH_SYSTEMCOSTINDICES = "systemCostIndices";
-    static String PATH_COSTINDEX = "costIndex";
-    static String PATH_ACTIVITYID = "activityID";
-    static String PATH_FACILITYID = "facilityID";
-    static String PATH_REGION = "region";
-    static String PATH_TAX = "tax";
-    static String PATH_OWNER = "owner";
-
     String getPath();
 
     T parseEntry(JsonNode node);

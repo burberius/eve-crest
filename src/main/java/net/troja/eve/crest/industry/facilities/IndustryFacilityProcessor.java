@@ -9,9 +9,9 @@ package net.troja.eve.crest.industry.facilities;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,7 @@ package net.troja.eve.crest.industry.facilities;
  */
 
 import net.troja.eve.crest.CrestApiProcessor;
+import net.troja.eve.crest.JsonPaths;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -32,13 +33,13 @@ public class IndustryFacilityProcessor implements CrestApiProcessor<IndustryFaci
 
     @Override
     public IndustryFacility parseEntry(final JsonNode node) {
-        final int facilityId = node.path(PATH_FACILITYID).asInt();
-        final String name = node.path(PATH_NAME).asText();
-        final int regionId = node.path(PATH_REGION).path(PATH_ID).asInt();
-        final long ownerId = node.path(PATH_OWNER).path(PATH_ID).asLong();
-        final int solarSystemId = node.path(PATH_SOLARSYSTEM).path(PATH_ID).asInt();
-        final int typeId = node.path(PATH_TYPE).path(PATH_ID).asInt();
-        final float tax = (float) node.path(PATH_TAX).asDouble();
+        final int facilityId = node.path(JsonPaths.FACILITYID).asInt();
+        final String name = node.path(JsonPaths.NAME).asText();
+        final int regionId = node.path(JsonPaths.REGION).path(JsonPaths.ID).asInt();
+        final long ownerId = node.path(JsonPaths.OWNER).path(JsonPaths.ID).asLong();
+        final int solarSystemId = node.path(JsonPaths.SOLARSYSTEM).path(JsonPaths.ID).asInt();
+        final int typeId = node.path(JsonPaths.TYPE).path(JsonPaths.ID).asInt();
+        final float tax = (float) node.path(JsonPaths.TAX).asDouble();
         return new IndustryFacility(facilityId, name, tax, solarSystemId, regionId, ownerId, typeId);
     }
 }

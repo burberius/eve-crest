@@ -21,23 +21,31 @@ package net.troja.eve.crest;
  */
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import net.troja.eve.crest.industry.facilities.IndustryFacility;
+import net.troja.eve.crest.industry.facilities.IndustryFacilityProcessor;
+import net.troja.eve.crest.industry.systems.IndustrySystem;
+import net.troja.eve.crest.industry.systems.IndustrySystemProcessor;
 import net.troja.eve.crest.itemtypes.ItemType;
 import net.troja.eve.crest.itemtypes.ItemTypeProcessor;
 import net.troja.eve.crest.market.prices.MarketPrice;
 import net.troja.eve.crest.market.prices.MarketPriceProcessor;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class CrestHandler {
-    private static final Logger LOGGER = LogManager.getLogger(CrestHandler.class);
     private final CrestDataProcessor processor = new CrestDataProcessor();
 
     private static final CrestHandler instance = new CrestHandler();
 
+    private final MarketPriceProcessor marketPriceProcessor = new MarketPriceProcessor();
+    private final IndustrySystemProcessor industrySystemProcessor = new IndustrySystemProcessor();
+    private final IndustryFacilityProcessor industryFacilityProcessor = new IndustryFacilityProcessor();
+
     private final Map<Integer, String> itemTypes = new HashMap<>();
+    private final Map<Integer, MarketPrice> marketPrices = new HashMap<>();
+    private List<IndustryFacility> industryFacilities;
+    private final Map<String, IndustrySystem> industrySystems = new HashMap<>();
 
     private CrestHandler() {
         // Static data
@@ -45,6 +53,7 @@ public class CrestHandler {
         for (final ItemType itemType : itemTypeContainer.getEntries()) {
             itemTypes.put(itemType.getId(), itemType.getName());
         }
+        // Temporary data
         updateData();
     }
 
@@ -53,10 +62,32 @@ public class CrestHandler {
     }
 
     private void updateData() {
-        final CrestContainer<MarketPrice> marketPriceContainer = processor.downloadAndProcessData(new MarketPriceProcessor());
+        final CrestContainer<MarketPrice> marketPriceContainer = processor.downloadAndProcessData(marketPriceProcessor);
+        marketPrices.clear();
+        for (final MarketPrice price : marketPriceContainer.getEntries()) {
+            marketPrices.put(price.getTypeId(), price);
+        }
+        final CrestContainer<IndustryFacility> industryFacilityContainer = processor.downloadAndProcessData(industryFacilityProcessor);
+        industryFacilities = industryFacilityContainer.getEntries();
+        final CrestContainer<IndustrySystem> industrySystemContainer = processor.downloadAndProcessData(industrySystemProcessor);
+        for (final IndustrySystem system : industrySystemContainer.getEntries()) {
+            industrySystems.put(system.getSolarSystemName(), system);
+        }
     }
 
     public String getItemName(final int id) {
         return itemTypes.get(id);
+    }
+
+    public MarketPrice getMarketPrice(final int id) {
+        return marketPrices.get(id);
+    }
+
+    public List<IndustryFacility> getIndustryFacilities() {
+        return industryFacilities;
+    }
+
+    public IndustrySystem getIndustrySystem(final String solarSystemName) {
+        return industrySystems.get(solarSystemName);
     }
 }
