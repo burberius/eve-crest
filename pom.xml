@@ -30,6 +30,11 @@ Documentation: https://wiki.eveonline.com/en/wiki/CREST_Getting_Started</descrip
             <artifactId>log4j-jcl</artifactId>
             <version>2.2</version>
         </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>
@@ -48,11 +53,6 @@ Documentation: https://wiki.eveonline.com/en/wiki/CREST_Getting_Started</descrip
             <artifactId>mockito-all</artifactId>
             <version>1.10.19</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
         </dependency>
     </dependencies>
 
@@ -84,6 +84,7 @@ Documentation: https://wiki.eveonline.com/en/wiki/CREST_Getting_Started</descrip
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -96,6 +97,7 @@ Documentation: https://wiki.eveonline.com/en/wiki/CREST_Getting_Started</descrip
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
