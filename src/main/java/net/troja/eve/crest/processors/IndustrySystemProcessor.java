@@ -22,10 +22,9 @@ package net.troja.eve.crest.processors;
 
 import java.util.Iterator;
 
-import net.troja.eve.crest.CrestApiProcessor;
-import net.troja.eve.crest.Utils.IndustryActivities;
-import net.troja.eve.crest.Utils.JsonPaths;
 import net.troja.eve.crest.beans.IndustrySystem;
+import net.troja.eve.crest.utils.IndustryActivities;
+import net.troja.eve.crest.utils.JsonPaths;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

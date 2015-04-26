@@ -34,7 +34,7 @@ import net.troja.eve.crest.processors.ItemTypeProcessor;
 import net.troja.eve.crest.processors.MarketPriceProcessor;
 
 public final class CrestHandler {
-    private static CrestHandler instance = null;
+    private static volatile CrestHandler instance;
 
     private final CrestDataProcessor processor = new CrestDataProcessor();
     private final MarketPriceProcessor marketPriceProcessor = new MarketPriceProcessor();

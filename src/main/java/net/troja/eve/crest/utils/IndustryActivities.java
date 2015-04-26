@@ -1,4 +1,4 @@
-package net.troja.eve.crest.Utils;
+package net.troja.eve.crest.utils;
 
 /*
  * ========================================================================
@@ -20,22 +20,14 @@ package net.troja.eve.crest.Utils;
  * ========================================================================
  */
 
-public final class JsonPaths {
-    public static final String HREF = "href";
-    public static final String NAME = "name";
-    public static final String TYPE = "type";
-    public static final String ID = "id";
-    public static final String ADJUSTEDPRICE = "adjustedPrice";
-    public static final String AVERAGEPRICE = "averagePrice";
-    public static final String SOLARSYSTEM = "solarSystem";
-    public static final String SYSTEMCOSTINDICES = "systemCostIndices";
-    public static final String COSTINDEX = "costIndex";
-    public static final String ACTIVITYID = "activityID";
-    public static final String FACILITYID = "facilityID";
-    public static final String REGION = "region";
-    public static final String TAX = "tax";
-    public static final String OWNER = "owner";
+public final class IndustryActivities {
+    public static final int Manufacturing = 1;
+    public static final int ResearchingTimeEfficiency = 3;
+    public static final int ResearchingMaterialEfficiency = 4;
+    public static final int Copying = 5;
+    public static final int Invention = 8;
 
-    private JsonPaths() {
+    private IndustryActivities() {
+
     }
 }

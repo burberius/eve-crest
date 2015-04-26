@@ -20,9 +20,8 @@ package net.troja.eve.crest.processors;
  * ========================================================================
  */
 
-import net.troja.eve.crest.CrestApiProcessor;
-import net.troja.eve.crest.Utils.JsonPaths;
 import net.troja.eve.crest.beans.MarketPrice;
+import net.troja.eve.crest.utils.JsonPaths;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

@@ -1,4 +1,4 @@
-package net.troja.eve.crest.Utils;
+package net.troja.eve.crest.utils;
 
 /*
  * ========================================================================
