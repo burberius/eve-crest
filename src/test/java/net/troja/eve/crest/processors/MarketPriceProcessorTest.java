@@ -1,4 +1,4 @@
-package net.troja.eve.crest.industry.systems;
+package net.troja.eve.crest.processors;
 
 /*
  * ========================================================================
@@ -26,28 +26,24 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 
 import net.troja.eve.crest.CrestApiProcessorTest;
-import net.troja.eve.crest.industry.facilities.IndustryFacility;
-import net.troja.eve.crest.industry.facilities.IndustryFacilityProcessor;
+import net.troja.eve.crest.beans.MarketPrice;
+import net.troja.eve.crest.processors.MarketPriceProcessor;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class IndustrySystemProcessorTest extends CrestApiProcessorTest {
+public class MarketPriceProcessorTest extends CrestApiProcessorTest {
     @Test
     public void testParsing() throws JsonProcessingException, IOException {
-        final IndustryFacilityProcessor processor = new IndustryFacilityProcessor();
+        final MarketPriceProcessor processor = new MarketPriceProcessor();
 
-        final JsonNode node = loadAndParseData("IndustryFacility.json");
-        final IndustryFacility industryFacility = processor.parseEntry(node);
+        final JsonNode node = loadAndParseData("MarketPrice.json");
+        final MarketPrice price = processor.parseEntry(node);
 
-        assertThat(industryFacility.getFacilityId(), equalTo(60012544));
-        assertThat(industryFacility.getName(), equalTo("Hasiari VIII - Moon 4 - Ammatar Consulate Bureau"));
-        assertThat(industryFacility.getSolarSystemId(), equalTo(30000032));
-        assertThat(industryFacility.getOwnerId(), equalTo(1000126l));
-        assertThat(industryFacility.getRegionId(), equalTo(10000001));
-        assertThat(industryFacility.getTax(), equalTo(0.1f));
-        assertThat(industryFacility.getTypeId(), equalTo(2502));
+        assertThat(price.getTypeId(), equalTo(32772));
+        assertThat(price.getAdjustedPrice(), equalTo(152720.94));
+        assertThat(price.getAveragePrice(), equalTo(150736.13));
     }
 }

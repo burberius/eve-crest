@@ -24,14 +24,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.troja.eve.crest.industry.facilities.IndustryFacility;
-import net.troja.eve.crest.industry.facilities.IndustryFacilityProcessor;
-import net.troja.eve.crest.industry.systems.IndustrySystem;
-import net.troja.eve.crest.industry.systems.IndustrySystemProcessor;
-import net.troja.eve.crest.itemtypes.ItemType;
-import net.troja.eve.crest.itemtypes.ItemTypeProcessor;
-import net.troja.eve.crest.market.prices.MarketPrice;
-import net.troja.eve.crest.market.prices.MarketPriceProcessor;
+import net.troja.eve.crest.beans.IndustryFacility;
+import net.troja.eve.crest.beans.IndustrySystem;
+import net.troja.eve.crest.beans.ItemType;
+import net.troja.eve.crest.beans.MarketPrice;
+import net.troja.eve.crest.processors.IndustryFacilityProcessor;
+import net.troja.eve.crest.processors.IndustrySystemProcessor;
+import net.troja.eve.crest.processors.ItemTypeProcessor;
+import net.troja.eve.crest.processors.MarketPriceProcessor;
 
 public final class CrestHandler {
     private static CrestHandler instance = null;

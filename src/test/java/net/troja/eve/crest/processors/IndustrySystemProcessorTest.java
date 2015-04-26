@@ -1,4 +1,4 @@
-package net.troja.eve.crest.industry.facilities;
+package net.troja.eve.crest.processors;
 
 /*
  * ========================================================================
@@ -26,28 +26,28 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 
 import net.troja.eve.crest.CrestApiProcessorTest;
-import net.troja.eve.crest.industry.systems.IndustrySystem;
-import net.troja.eve.crest.industry.systems.IndustrySystemProcessor;
+import net.troja.eve.crest.beans.IndustryFacility;
+import net.troja.eve.crest.processors.IndustryFacilityProcessor;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class IndustryFacilityProcessorTest extends CrestApiProcessorTest {
+public class IndustrySystemProcessorTest extends CrestApiProcessorTest {
     @Test
     public void testParsing() throws JsonProcessingException, IOException {
-        final IndustrySystemProcessor processor = new IndustrySystemProcessor();
+        final IndustryFacilityProcessor processor = new IndustryFacilityProcessor();
 
-        final JsonNode node = loadAndParseData("IndustrySystem.json");
-        final IndustrySystem industrySystem = processor.parseEntry(node);
+        final JsonNode node = loadAndParseData("IndustryFacility.json");
+        final IndustryFacility industryFacility = processor.parseEntry(node);
 
-        assertThat(industrySystem.getSolarSystemId(), equalTo(30011392));
-        assertThat(industrySystem.getSolarSystemName(), equalTo("Jouvulen"));
-        assertThat(industrySystem.getCopyingCostIndex(), equalTo(0.002126825019385529d));
-        assertThat(industrySystem.getInventionCostIndex(), equalTo(0.002651119668210213d));
-        assertThat(industrySystem.getManufacturingCostIndex(), equalTo(0.029556772662022016d));
-        assertThat(industrySystem.getResearchingMaterialEfficiencyCostIndex(), equalTo(0.00098d));
-        assertThat(industrySystem.getResearchingTimeEfficiencyCostIndex(), equalTo(0.00098d));
+        assertThat(industryFacility.getFacilityId(), equalTo(60012544));
+        assertThat(industryFacility.getName(), equalTo("Hasiari VIII - Moon 4 - Ammatar Consulate Bureau"));
+        assertThat(industryFacility.getSolarSystemId(), equalTo(30000032));
+        assertThat(industryFacility.getOwnerId(), equalTo(1000126l));
+        assertThat(industryFacility.getRegionId(), equalTo(10000001));
+        assertThat(industryFacility.getTax(), equalTo(0.1f));
+        assertThat(industryFacility.getTypeId(), equalTo(2502));
     }
 }

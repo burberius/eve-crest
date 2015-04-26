@@ -1,4 +1,4 @@
-package net.troja.eve.crest;
+package net.troja.eve.crest.processors;
 
 /*
  * ========================================================================
@@ -20,22 +20,23 @@ package net.troja.eve.crest;
  * ========================================================================
  */
 
-public final class JsonPaths {
-    public static final String HREF = "href";
-    public static final String NAME = "name";
-    public static final String TYPE = "type";
-    public static final String ID = "id";
-    public static final String ADJUSTEDPRICE = "adjustedPrice";
-    public static final String AVERAGEPRICE = "averagePrice";
-    public static final String SOLARSYSTEM = "solarSystem";
-    public static final String SYSTEMCOSTINDICES = "systemCostIndices";
-    public static final String COSTINDEX = "costIndex";
-    public static final String ACTIVITYID = "activityID";
-    public static final String FACILITYID = "facilityID";
-    public static final String REGION = "region";
-    public static final String TAX = "tax";
-    public static final String OWNER = "owner";
+import net.troja.eve.crest.CrestApiProcessor;
+import net.troja.eve.crest.Utils.JsonPaths;
+import net.troja.eve.crest.beans.MarketPrice;
 
-    private JsonPaths() {
+import com.fasterxml.jackson.databind.JsonNode;
+
+public class MarketPriceProcessor implements CrestApiProcessor<MarketPrice> {
+    @Override
+    public String getPath() {
+        return "/market/prices/";
+    }
+
+    @Override
+    public MarketPrice parseEntry(final JsonNode node) {
+        final double adjustedPrice = node.path(JsonPaths.ADJUSTEDPRICE).asDouble();
+        final double averagePrice = node.path(JsonPaths.AVERAGEPRICE).asDouble();
+        final int typeId = node.path(JsonPaths.TYPE).path(JsonPaths.ID).asInt();
+        return new MarketPrice(typeId, adjustedPrice, averagePrice);
     }
 }

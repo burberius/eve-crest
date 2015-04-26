@@ -22,6 +22,9 @@ package net.troja.eve.crest;
 
 import java.io.IOException;
 
+import net.troja.eve.crest.Utils.DataProcessingException;
+import net.troja.eve.crest.Utils.JsonPaths;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

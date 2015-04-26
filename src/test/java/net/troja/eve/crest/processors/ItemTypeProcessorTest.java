@@ -1,4 +1,4 @@
-package net.troja.eve.crest.market.prices;
+package net.troja.eve.crest.processors;
 
 /*
  * ========================================================================
@@ -20,22 +20,29 @@ package net.troja.eve.crest.market.prices;
  * ========================================================================
  */
 
-import net.troja.eve.crest.CrestApiProcessor;
-import net.troja.eve.crest.JsonPaths;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
+
+import net.troja.eve.crest.CrestApiProcessorTest;
+import net.troja.eve.crest.beans.ItemType;
+import net.troja.eve.crest.processors.ItemTypeProcessor;
+
+import org.junit.Test;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class MarketPriceProcessor implements CrestApiProcessor<MarketPrice> {
-    @Override
-    public String getPath() {
-        return "/market/prices/";
-    }
+public class ItemTypeProcessorTest extends CrestApiProcessorTest {
+    @Test
+    public void testParsing() throws JsonProcessingException, IOException {
+        final ItemTypeProcessor processor = new ItemTypeProcessor();
 
-    @Override
-    public MarketPrice parseEntry(final JsonNode node) {
-        final double adjustedPrice = node.path(JsonPaths.ADJUSTEDPRICE).asDouble();
-        final double averagePrice = node.path(JsonPaths.AVERAGEPRICE).asDouble();
-        final int typeId = node.path(JsonPaths.TYPE).path(JsonPaths.ID).asInt();
-        return new MarketPrice(typeId, adjustedPrice, averagePrice);
+        final JsonNode node = loadAndParseData("ItemType.json");
+        final ItemType type = processor.parseEntry(node);
+
+        assertThat(type.getId(), equalTo(2200));
+        assertThat(type.getName(), equalTo("Crate of Prototype Body Armor Fabric "));
     }
 }

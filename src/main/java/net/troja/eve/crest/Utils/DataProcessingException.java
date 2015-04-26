@@ -1,4 +1,4 @@
-package net.troja.eve.crest.itemtypes;
+package net.troja.eve.crest.Utils;
 
 /*
  * ========================================================================
@@ -9,9 +9,9 @@ package net.troja.eve.crest.itemtypes;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,38 +20,15 @@ package net.troja.eve.crest.itemtypes;
  * ========================================================================
  */
 
-public class ItemType {
-    private int id;
-    private String name;
 
-    public ItemType() {
-        super();
+public class DataProcessingException extends Exception {
+    private static final long serialVersionUID = 479283977025416155L;
+
+    public DataProcessingException(final String message) {
+        super(message);
     }
 
-    public ItemType(final int id, final String name) {
-        super();
-        this.id = id;
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(final int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "ItemType [id=" + id + ", name=" + name + "]";
+    public DataProcessingException(final String message, final Throwable cause) {
+        super(message, cause);
     }
 }

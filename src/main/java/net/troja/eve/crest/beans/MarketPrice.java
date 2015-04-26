@@ -1,4 +1,4 @@
-package net.troja.eve.crest.market.prices;
+package net.troja.eve.crest.beans;
 
 /*
  * ========================================================================

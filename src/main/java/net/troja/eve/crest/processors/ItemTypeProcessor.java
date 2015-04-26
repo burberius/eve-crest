@@ -1,4 +1,4 @@
-package net.troja.eve.crest.itemtypes;
+package net.troja.eve.crest.processors;
 
 /*
  * ========================================================================
@@ -20,27 +20,22 @@ package net.troja.eve.crest.itemtypes;
  * ========================================================================
  */
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import net.troja.eve.crest.CrestApiProcessor;
+import net.troja.eve.crest.Utils.JsonPaths;
+import net.troja.eve.crest.beans.ItemType;
 
-import java.io.IOException;
-
-import net.troja.eve.crest.CrestApiProcessorTest;
-
-import org.junit.Test;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class ItemTypeProcessorTest extends CrestApiProcessorTest {
-    @Test
-    public void testParsing() throws JsonProcessingException, IOException {
-        final ItemTypeProcessor processor = new ItemTypeProcessor();
+public class ItemTypeProcessor implements CrestApiProcessor<ItemType> {
+    @Override
+    public String getPath() {
+        return "/types/";
+    }
 
-        final JsonNode node = loadAndParseData("ItemType.json");
-        final ItemType type = processor.parseEntry(node);
-
-        assertThat(type.getId(), equalTo(2200));
-        assertThat(type.getName(), equalTo("Crate of Prototype Body Armor Fabric "));
+    @Override
+    public ItemType parseEntry(final JsonNode node) {
+        final String href = node.path(JsonPaths.HREF).asText();
+        final int id = Integer.parseInt(href.replaceAll(".*/([0-9]+)/$", "$1"));
+        return new ItemType(id, node.path(JsonPaths.NAME).asText());
     }
 }

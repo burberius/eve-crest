@@ -1,4 +1,4 @@
-package net.troja.eve.crest.industry.facilities;
+package net.troja.eve.crest.beans;
 
 /*
  * ========================================================================

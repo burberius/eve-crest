@@ -1,4 +1,4 @@
-package net.troja.eve.crest.industry.facilities;
+package net.troja.eve.crest.processors;
 
 /*
  * ========================================================================
@@ -21,7 +21,8 @@ package net.troja.eve.crest.industry.facilities;
  */
 
 import net.troja.eve.crest.CrestApiProcessor;
-import net.troja.eve.crest.JsonPaths;
+import net.troja.eve.crest.Utils.JsonPaths;
+import net.troja.eve.crest.beans.IndustryFacility;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

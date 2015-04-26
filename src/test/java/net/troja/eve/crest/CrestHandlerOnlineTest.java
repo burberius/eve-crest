@@ -27,9 +27,9 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import net.troja.eve.crest.industry.facilities.IndustryFacility;
-import net.troja.eve.crest.industry.systems.IndustrySystem;
-import net.troja.eve.crest.market.prices.MarketPrice;
+import net.troja.eve.crest.beans.IndustryFacility;
+import net.troja.eve.crest.beans.IndustrySystem;
+import net.troja.eve.crest.beans.MarketPrice;
 
 import org.junit.Test;
 

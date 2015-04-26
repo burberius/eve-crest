@@ -35,8 +35,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import net.troja.eve.crest.itemtypes.ItemType;
-import net.troja.eve.crest.itemtypes.ItemTypeProcessor;
+import net.troja.eve.crest.beans.ItemType;
+import net.troja.eve.crest.processors.ItemTypeProcessor;
 
 import org.junit.Before;
 import org.junit.Test;

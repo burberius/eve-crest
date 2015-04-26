@@ -23,8 +23,8 @@ package net.troja.eve.crest;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import net.troja.eve.crest.itemtypes.ItemType;
-import net.troja.eve.crest.itemtypes.ItemTypeProcessor;
+import net.troja.eve.crest.beans.ItemType;
+import net.troja.eve.crest.processors.ItemTypeProcessor;
 
 import org.junit.Test;
 

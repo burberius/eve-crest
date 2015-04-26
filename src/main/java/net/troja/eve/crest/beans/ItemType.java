@@ -1,4 +1,4 @@
-package net.troja.eve.crest.itemtypes;
+package net.troja.eve.crest.beans;
 
 /*
  * ========================================================================
@@ -20,21 +20,38 @@ package net.troja.eve.crest.itemtypes;
  * ========================================================================
  */
 
-import net.troja.eve.crest.CrestApiProcessor;
-import net.troja.eve.crest.JsonPaths;
+public class ItemType {
+    private int id;
+    private String name;
 
-import com.fasterxml.jackson.databind.JsonNode;
+    public ItemType() {
+        super();
+    }
 
-public class ItemTypeProcessor implements CrestApiProcessor<ItemType> {
-    @Override
-    public String getPath() {
-        return "/types/";
+    public ItemType(final int id, final String name) {
+        super();
+        this.id = id;
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(final int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
     }
 
     @Override
-    public ItemType parseEntry(final JsonNode node) {
-        final String href = node.path(JsonPaths.HREF).asText();
-        final int id = Integer.parseInt(href.replaceAll(".*/([0-9]+)/$", "$1"));
-        return new ItemType(id, node.path(JsonPaths.NAME).asText());
+    public String toString() {
+        return "ItemType [id=" + id + ", name=" + name + "]";
     }
 }
