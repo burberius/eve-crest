@@ -9,9 +9,9 @@ package net.troja.eve.crest;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,7 @@ package net.troja.eve.crest;
  */
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -34,5 +35,12 @@ public class CrestAccessorOnlineTest {
         final String data = accessor.getData("");
         assertThat(data, containsString("crestEndpoint"));
         assertThat(data, containsString("TRANQUILITY"));
+    }
+
+    @Test
+    public void testWrongAddress() throws IOException {
+        final CrestAccessor accessor = new CrestAccessor();
+        final String data = accessor.getData("/wrong");
+        assertThat(data, nullValue());
     }
 }

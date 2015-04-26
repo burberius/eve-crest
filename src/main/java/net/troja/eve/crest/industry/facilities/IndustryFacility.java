@@ -20,7 +20,6 @@ package net.troja.eve.crest.industry.facilities;
  * ========================================================================
  */
 
-
 public class IndustryFacility {
     private int facilityId;
     private String name;
@@ -49,6 +48,7 @@ public class IndustryFacility {
     public void setFacilityId(final int facilityId) {
         this.facilityId = facilityId;
     }
+
     public String getName() {
         return name;
     }

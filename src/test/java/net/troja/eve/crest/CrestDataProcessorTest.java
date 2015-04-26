@@ -21,6 +21,7 @@ package net.troja.eve.crest;
  */
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -72,5 +73,13 @@ public class CrestDataProcessorTest {
         assertThat(container.getPageCount(), equalTo(23));
         assertThat(container.getTotalCount(), equalTo(22406));
         assertThat(container.getEntries().size(), equalTo(5));
+    }
+
+    @Test
+    public void testEmptyAnswer() throws IOException {
+        final ItemTypeProcessor processor = mock(ItemTypeProcessor.class);
+        when(accessor.getData(anyString())).thenReturn("  ");
+        final CrestContainer<ItemType> container = objectToTest.downloadAndProcessData(processor);
+        assertThat(container, nullValue());
     }
 }

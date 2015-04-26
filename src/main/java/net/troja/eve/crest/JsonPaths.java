@@ -20,7 +20,7 @@ package net.troja.eve.crest;
  * ========================================================================
  */
 
-public class JsonPaths {
+public final class JsonPaths {
     public static final String HREF = "href";
     public static final String NAME = "name";
     public static final String TYPE = "type";
@@ -35,4 +35,7 @@ public class JsonPaths {
     public static final String REGION = "region";
     public static final String TAX = "tax";
     public static final String OWNER = "owner";
+
+    private JsonPaths() {
+    }
 }

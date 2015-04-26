@@ -28,7 +28,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,10 +40,6 @@ public class CrestAccessor {
 
     private String userAgent = USER_AGENT + getClass().getPackage().getImplementationVersion();
 
-    public CrestAccessor() {
-        super();
-    }
-
     public String getUserAgent() {
         return userAgent;
     }
@@ -53,8 +49,10 @@ public class CrestAccessor {
     }
 
     public String getDataPage(final String address) throws IOException {
-        final CloseableHttpClient httpclient = HttpClients.createDefault();
+        final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+        final CloseableHttpClient httpclient = clientBuilder.build();
         final HttpGet request = new HttpGet(address);
+        String result = null;
         try {
             request.setHeader("User-Agent", userAgent);
             final HttpResponse response = httpclient.execute(request);
@@ -62,18 +60,19 @@ public class CrestAccessor {
             final int status = statusLine.getStatusCode();
             if ((status >= HttpStatus.SC_OK) && (status < HttpStatus.SC_MULTIPLE_CHOICES)) {
                 final HttpEntity entity = response.getEntity();
-                if (entity == null) {
-                    return null;
+                if (entity != null) {
+                    result = EntityUtils.toString(entity);
                 }
-                return EntityUtils.toString(entity);
             } else {
-                LOGGER.warn("Got " + status + " for the query " + address);
-                return null;
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn("Got " + status + " for the query " + address);
+                }
             }
         } finally {
             request.reset();
             httpclient.close();
         }
+        return result;
     }
 
     public String getData(final String path) throws IOException {

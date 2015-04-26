@@ -20,9 +20,9 @@ package net.troja.eve.crest;
  * ========================================================================
  */
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.troja.eve.crest.industry.facilities.IndustryFacility;
 import net.troja.eve.crest.industry.facilities.IndustryFacilityProcessor;
@@ -33,19 +33,18 @@ import net.troja.eve.crest.itemtypes.ItemTypeProcessor;
 import net.troja.eve.crest.market.prices.MarketPrice;
 import net.troja.eve.crest.market.prices.MarketPriceProcessor;
 
-public class CrestHandler {
+public final class CrestHandler {
+    private static CrestHandler instance = null;
+
     private final CrestDataProcessor processor = new CrestDataProcessor();
-
-    private static final CrestHandler instance = new CrestHandler();
-
     private final MarketPriceProcessor marketPriceProcessor = new MarketPriceProcessor();
     private final IndustrySystemProcessor industrySystemProcessor = new IndustrySystemProcessor();
     private final IndustryFacilityProcessor industryFacilityProcessor = new IndustryFacilityProcessor();
 
-    private final Map<Integer, String> itemTypes = new HashMap<>();
-    private final Map<Integer, MarketPrice> marketPrices = new HashMap<>();
+    private final Map<Integer, String> itemTypes = new ConcurrentHashMap<>();
+    private final Map<Integer, MarketPrice> marketPrices = new ConcurrentHashMap<>();
     private List<IndustryFacility> industryFacilities;
-    private final Map<String, IndustrySystem> industrySystems = new HashMap<>();
+    private final Map<String, IndustrySystem> industrySystems = new ConcurrentHashMap<>();
 
     private CrestHandler() {
         // Static data
@@ -58,6 +57,9 @@ public class CrestHandler {
     }
 
     public static CrestHandler getInstance() {
+        if (instance == null) {
+            instance = new CrestHandler();
+        }
         return instance;
     }
 
@@ -75,12 +77,12 @@ public class CrestHandler {
         }
     }
 
-    public String getItemName(final int id) {
-        return itemTypes.get(id);
+    public String getItemName(final int itemTypeId) {
+        return itemTypes.get(itemTypeId);
     }
 
-    public MarketPrice getMarketPrice(final int id) {
-        return marketPrices.get(id);
+    public MarketPrice getMarketPrice(final int itemTypeId) {
+        return marketPrices.get(itemTypeId);
     }
 
     public List<IndustryFacility> getIndustryFacilities() {

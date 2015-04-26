@@ -28,10 +28,6 @@ public class CrestContainer<T> {
     private int totalCount;
     private int pageCount;
 
-    public CrestContainer() {
-        super();
-    }
-
     public List<T> getEntries() {
         return entries;
     }

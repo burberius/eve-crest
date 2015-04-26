@@ -22,11 +22,14 @@ package net.troja.eve.crest;
 
 import java.io.IOException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -49,27 +52,26 @@ public class CrestDataProcessor {
     }
 
     public <T> CrestContainer<T> downloadAndProcessData(final CrestApiProcessor<T> processor) {
-        final CrestContainer<T> container = new CrestContainer<T>();
         try {
+            final CrestContainer<T> container = new CrestContainer<T>();
             String data = accessor.getData(processor.getPath());
             String next = processData(processor, container, data);
             while (next != null) {
                 data = accessor.getDataPage(next);
                 next = processData(processor, container, data);
             }
+            return container;
         } catch (final DataProcessingException e) {
             LOGGER.error("Could not process data", e);
-            return null;
         } catch (final IOException e) {
             LOGGER.error("Could not download data", e);
-            return null;
         }
-        return container;
+        return null;
     }
 
     private <T> String processData(final CrestApiProcessor<T> processor, final CrestContainer<T> container, final String data)
             throws DataProcessingException {
-        if ((data == null) || (data.trim().length() == 0)) {
+        if (StringUtils.isBlank(data)) {
             throw new DataProcessingException("No data to parse");
         }
         String next = null;
@@ -88,26 +90,37 @@ public class CrestDataProcessor {
                         container.setPageCount(jsonParser.getIntValue());
                         break;
                     case "items":
-                        if (jsonParser.isExpectedStartArrayToken()) {
-                            while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
-                                container.addEntry(processor.parseEntry((JsonNode) mapper.readTree(jsonParser)));
-                            }
-                        }
+                        processItems(processor, container, jsonParser);
                         break;
                     case "next":
-                        jsonParser.nextToken();
-                        if (!JsonPaths.HREF.equals(jsonParser.getCurrentName())) {
-                            break;
-                        }
-                        jsonParser.nextToken();
-                        next = jsonParser.getText();
-                        jsonParser.nextToken();
+                        next = processNext(jsonParser);
+                        break;
                     default:
                         break;
                 }
             }
         } catch (final IOException e) {
             throw new DataProcessingException("Problems while parsing json data", e);
+        }
+        return next;
+    }
+
+    private <T> void processItems(final CrestApiProcessor<T> processor, final CrestContainer<T> container, final JsonParser jsonParser)
+            throws IOException, JsonParseException, JsonProcessingException {
+        if (jsonParser.isExpectedStartArrayToken()) {
+            while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
+                container.addEntry(processor.parseEntry((JsonNode) mapper.readTree(jsonParser)));
+            }
+        }
+    }
+
+    private String processNext(final JsonParser jsonParser) throws JsonParseException, IOException {
+        String next = null;
+        jsonParser.nextToken();
+        if (JsonPaths.HREF.equals(jsonParser.getCurrentName())) {
+            jsonParser.nextToken();
+            next = jsonParser.getText();
+            jsonParser.nextToken();
         }
         return next;
     }

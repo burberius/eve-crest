@@ -49,6 +49,11 @@ Documentation: https://wiki.eveonline.com/en/wiki/CREST_Getting_Started</descrip
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
     </dependencies>
 
     <build>
