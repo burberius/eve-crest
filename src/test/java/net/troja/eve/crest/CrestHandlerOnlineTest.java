@@ -27,6 +27,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
+import net.troja.eve.crest.CrestHandler.DataType;
 import net.troja.eve.crest.beans.IndustryFacility;
 import net.troja.eve.crest.beans.IndustrySystem;
 import net.troja.eve.crest.beans.MarketPrice;
@@ -40,6 +41,8 @@ public class CrestHandlerOnlineTest {
     @Test
     public void testDownloadOfData() {
         final CrestHandler handler = CrestHandler.getInstance();
+        handler.enableDataPrefetching(DataType.ITEM_TYPE, DataType.INDUSTRY_FACILITY, DataType.INDUSTRY_SYSTEM, DataType.MARKET_PRICE);
+        handler.init();
 
         assertThat(handler.getItemName(34), equalTo(TRITANIUM));
 
@@ -55,5 +58,7 @@ public class CrestHandlerOnlineTest {
         final IndustrySystem industrySystem = handler.getIndustrySystem(JITA);
         assertThat(industrySystem, notNullValue());
         assertThat(industrySystem.getSolarSystemName(), equalTo(JITA));
+
+        handler.shutdown();
     }
 }
