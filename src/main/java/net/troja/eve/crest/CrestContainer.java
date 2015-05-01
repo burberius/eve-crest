@@ -27,6 +27,7 @@ public class CrestContainer<T> {
     private List<T> entries = new ArrayList<>();
     private int totalCount;
     private int pageCount;
+    private long timestamp;
 
     public List<T> getEntries() {
         return entries;
@@ -54,5 +55,13 @@ public class CrestContainer<T> {
 
     public void setPageCount(final int pageCount) {
         this.pageCount = pageCount;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(final long timestamp) {
+        this.timestamp = timestamp;
     }
 }

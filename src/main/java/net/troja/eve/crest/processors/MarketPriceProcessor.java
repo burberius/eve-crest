@@ -26,9 +26,19 @@ import net.troja.eve.crest.utils.JsonPaths;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class MarketPriceProcessor implements CrestApiProcessor<MarketPrice> {
+    /**
+     * 24 hours
+     */
+    private static final int REFRESH_INTERVAL = 1000 * 60 * 60 * 24;
+
     @Override
     public String getPath() {
         return "/market/prices/";
+    }
+
+    @Override
+    public int getRefreshInterval() {
+        return REFRESH_INTERVAL;
     }
 
     @Override

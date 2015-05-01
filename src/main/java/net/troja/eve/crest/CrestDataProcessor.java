@@ -64,6 +64,7 @@ public class CrestDataProcessor {
                 data = accessor.getDataPage(next);
                 next = processData(processor, container, data);
             }
+            container.setTimestamp(System.currentTimeMillis());
             return container;
         } catch (final DataProcessingException e) {
             LOGGER.error("Could not process data", e);

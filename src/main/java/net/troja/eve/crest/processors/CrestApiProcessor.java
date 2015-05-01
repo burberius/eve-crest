@@ -25,5 +25,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 public interface CrestApiProcessor<T> {
     String getPath();
 
+    /**
+     * @return interval in micro seconds
+     */
+    int getRefreshInterval();
+
     T parseEntry(JsonNode node);
 }

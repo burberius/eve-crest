@@ -53,7 +53,7 @@ public class CrestDataProcessorTest {
     private CrestAccessor accessor;
 
     @Before
-    public void setup() {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         objectToTest.setAccessor(accessor);
     }

@@ -26,12 +26,19 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class CrestAccessorOnlineTest {
+    private final CrestAccessor accessor = new CrestAccessor();
+
+    @Before
+    public void setUp() {
+        accessor.setUserAgent("Test");
+    }
+
     @Test
     public void testDownloadOfApiData() throws IOException {
-        final CrestAccessor accessor = new CrestAccessor();
         final String data = accessor.getData("");
         assertThat(data, containsString("crestEndpoint"));
         assertThat(data, containsString("TRANQUILITY"));
@@ -39,7 +46,6 @@ public class CrestAccessorOnlineTest {
 
     @Test
     public void testWrongAddress() throws IOException {
-        final CrestAccessor accessor = new CrestAccessor();
         final String data = accessor.getData("/wrong");
         assertThat(data, nullValue());
     }

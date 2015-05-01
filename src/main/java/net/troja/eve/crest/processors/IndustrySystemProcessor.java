@@ -29,17 +29,27 @@ import net.troja.eve.crest.utils.JsonPaths;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class IndustrySystemProcessor implements CrestApiProcessor<IndustrySystem> {
+    /**
+     * 1 hour
+     */
+    private static final int REFRESH_INTERVAL = 1000 * 60 * 60;
+
     @Override
     public String getPath() {
         return "/industry/systems/";
     }
 
     @Override
+    public int getRefreshInterval() {
+        return REFRESH_INTERVAL;
+    }
+
+    @Override
     public IndustrySystem parseEntry(final JsonNode node) {
         final JsonNode solarSystem = node.path(JsonPaths.SOLARSYSTEM);
-        final int id = solarSystem.path(JsonPaths.ID).asInt();
+        final int solarSystemId = solarSystem.path(JsonPaths.ID).asInt();
         final String name = solarSystem.path(JsonPaths.NAME).asText();
-        final IndustrySystem industrySystem = new IndustrySystem(id, name);
+        final IndustrySystem industrySystem = new IndustrySystem(solarSystemId, name);
         final Iterator<JsonNode> elements = node.path(JsonPaths.SYSTEMCOSTINDICES).elements();
         while (elements.hasNext()) {
             final JsonNode next = elements.next();

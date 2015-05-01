@@ -47,29 +47,31 @@ import org.apache.logging.log4j.Logger;
  * Handles the complete crest communication, including caching of the data.
  */
 public final class CrestHandler {
+    private static final int MINUTES_30 = 30;
     private static final Logger LOGGER = LogManager.getLogger(CrestHandler.class);
-    private static volatile CrestHandler instance;
+    private static CrestHandler instance;
 
-    private final CrestDataProcessor processor = new CrestDataProcessor();
-    private final Map<DataType, ProcessorConfiguration<?>> processors = new ConcurrentHashMap<>();
+    private CrestDataProcessor processor = new CrestDataProcessor();
+    private final Map<DataType, ProcessorConfiguration<?>> dataProcessors = new ConcurrentHashMap<>();
+    private final Map<DataType, Long> lastUpdates = new ConcurrentHashMap<>();
 
     private final Map<Integer, String> itemTypes = new ConcurrentHashMap<>();
     private final Map<Integer, MarketPrice> marketPrices = new ConcurrentHashMap<>();
     private List<IndustryFacility> industryFacilities;
     private final Map<String, IndustrySystem> industrySystems = new ConcurrentHashMap<>();
 
-    private final ScheduledExecutorService scheduleService = Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService scheduleService;
 
     public enum DataType {
         ITEM_TYPE, MARKET_PRICE, INDUSTRY_SYSTEM, INDUSTRY_FACILITY
-    };
+    }
 
     private CrestHandler() {
-        processors.put(DataType.ITEM_TYPE, new ProcessorConfiguration<ItemType>(new ItemTypeProcessor(), getItemTypeConsumer()));
-        processors.put(DataType.MARKET_PRICE, new ProcessorConfiguration<MarketPrice>(new MarketPriceProcessor(), getMarketPriceConsumer()));
-        processors.put(DataType.INDUSTRY_SYSTEM, new ProcessorConfiguration<IndustrySystem>(new IndustrySystemProcessor(),
+        dataProcessors.put(DataType.ITEM_TYPE, new ProcessorConfiguration<ItemType>(new ItemTypeProcessor(), getItemTypeConsumer()));
+        dataProcessors.put(DataType.MARKET_PRICE, new ProcessorConfiguration<MarketPrice>(new MarketPriceProcessor(), getMarketPriceConsumer()));
+        dataProcessors.put(DataType.INDUSTRY_SYSTEM, new ProcessorConfiguration<IndustrySystem>(new IndustrySystemProcessor(),
                 getIndustrySystemConsumer()));
-        processors.put(DataType.INDUSTRY_FACILITY, new ProcessorConfiguration<IndustryFacility>(new IndustryFacilityProcessor(),
+        dataProcessors.put(DataType.INDUSTRY_FACILITY, new ProcessorConfiguration<IndustryFacility>(new IndustryFacilityProcessor(),
                 getIndustryFacilityConsumer()));
     }
 
@@ -78,7 +80,7 @@ public final class CrestHandler {
      *
      * @return CrestHandler instance
      */
-    public static CrestHandler getInstance() {
+    public static synchronized CrestHandler getInstance() {
         if (instance == null) {
             instance = new CrestHandler();
         }
@@ -89,10 +91,23 @@ public final class CrestHandler {
      * Enable fetching of the data in the background for the given types.
      *
      * @param types
+     *            DataType(s) to enable
      */
     public void enableDataPrefetching(final DataType... types) {
         for (final DataType type : types) {
-            processors.get(type).setEnabled(true);
+            dataProcessors.get(type).setEnabled(true);
+        }
+    }
+
+    /**
+     * Enable fetching of the data in the background for the given types.
+     *
+     * @param types
+     *            DataType(s) to enable
+     */
+    public void disableDataPrefetching(final DataType... types) {
+        for (final DataType type : types) {
+            dataProcessors.get(type).setEnabled(false);
         }
     }
 
@@ -100,8 +115,11 @@ public final class CrestHandler {
      * Start background timer thread and fetch the data for the first time.
      */
     public void init() {
+        if ((scheduleService == null) || scheduleService.isShutdown()) {
+            scheduleService = Executors.newScheduledThreadPool(1);
+        }
         LOGGER.info("Scheduling data updates");
-        scheduleService.scheduleAtFixedRate(() -> updateData(), 30, 30, TimeUnit.MINUTES);
+        scheduleService.scheduleAtFixedRate(() -> updateData(), MINUTES_30, MINUTES_30, TimeUnit.MINUTES);
         updateData();
     }
 
@@ -110,22 +128,32 @@ public final class CrestHandler {
      */
     public void shutdown() {
         scheduleService.shutdownNow();
+        industryFacilities = null;
+        itemTypes.clear();
+        industrySystems.clear();
+        marketPrices.clear();
     }
 
-    private void updateData() {
+    public void updateData() {
         LOGGER.info("Updating data");
-        for (final Entry<DataType, ProcessorConfiguration<?>> entry : processors.entrySet()) {
+        for (final Entry<DataType, ProcessorConfiguration<?>> entry : dataProcessors.entrySet()) {
             final ProcessorConfiguration<?> procConfig = entry.getValue();
-            if (procConfig.isEnabled()) {
-                updateData(procConfig);
+            Long lastUpdate = lastUpdates.get(entry.getKey());
+            if (lastUpdate == null) {
+                lastUpdate = 0l;
+            }
+            final int refreshInterval = procConfig.getProcessor().getRefreshInterval();
+            if (procConfig.isEnabled() && (lastUpdate < (System.currentTimeMillis() - refreshInterval))) {
+                lastUpdates.put(entry.getKey(), updateData(procConfig));
             }
         }
     }
 
-    private <T> void updateData(final ProcessorConfiguration<T> config) {
+    private <T> long updateData(final ProcessorConfiguration<T> config) {
         final CrestApiProcessor<T> typeProcessor = config.getProcessor();
-        config.getConsumer().accept(processor.downloadAndProcessData(typeProcessor).getEntries());
-        config.setUpdateTime(System.currentTimeMillis());
+        final CrestContainer<T> result = processor.downloadAndProcessData(typeProcessor);
+        config.getConsumer().accept(result.getEntries());
+        return result.getTimestamp();
     }
 
     private Consumer<List<ItemType>> getItemTypeConsumer() {
@@ -155,6 +183,10 @@ public final class CrestHandler {
 
     private Consumer<List<IndustryFacility>> getIndustryFacilityConsumer() {
         return t -> industryFacilities = t;
+    }
+
+    public void setProcessor(final CrestDataProcessor processor) {
+        this.processor = processor;
     }
 
     public String getItemName(final int itemTypeId) {
