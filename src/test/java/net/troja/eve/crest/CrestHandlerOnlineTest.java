@@ -53,7 +53,7 @@ public class CrestHandlerOnlineTest {
 
         final List<IndustryFacility> industryFacilities = handler.getIndustryFacilities();
         assertThat(industryFacilities, notNullValue());
-        assertThat(industryFacilities.size(), greaterThan(100));
+        assertThat(industryFacilities.size(), greaterThan(1));
 
         final IndustrySystem industrySystem = handler.getIndustrySystem(JITA);
         assertThat(industrySystem, notNullValue());
