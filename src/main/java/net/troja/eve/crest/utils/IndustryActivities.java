@@ -21,13 +21,12 @@ package net.troja.eve.crest.utils;
  */
 
 public final class IndustryActivities {
-    public static final int Manufacturing = 1;
-    public static final int ResearchingTimeEfficiency = 3;
-    public static final int ResearchingMaterialEfficiency = 4;
-    public static final int Copying = 5;
-    public static final int Invention = 8;
+    public static final int MANUFACTURING = 1;
+    public static final int RESEARCHING_TIME_EFFICIENCY = 3;
+    public static final int RESEARCHING_MATERIAL_EFFICIENCY = 4;
+    public static final int COPYING = 5;
+    public static final int INVENTION = 8;
 
     private IndustryActivities() {
-
     }
 }

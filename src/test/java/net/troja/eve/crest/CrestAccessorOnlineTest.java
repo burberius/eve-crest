@@ -34,7 +34,7 @@ public class CrestAccessorOnlineTest {
 
     @Before
     public void setUp() {
-        accessor.setUserAgent("Test");
+        accessor.setUserAgent(accessor.getUserAgent() + " - Test");
     }
 
     @Test

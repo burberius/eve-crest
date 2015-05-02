@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class IndustrySystemProcessor implements CrestApiProcessor<IndustrySystem> {
     /**
-     * 1 hour
+     * Refresh interval: 1 hour.
      */
     private static final int REFRESH_INTERVAL = 1000 * 60 * 60;
 
@@ -55,19 +55,19 @@ public class IndustrySystemProcessor implements CrestApiProcessor<IndustrySystem
             final JsonNode next = elements.next();
             final double value = next.path(JsonPaths.COSTINDEX).asDouble();
             switch (next.path(JsonPaths.ACTIVITYID).asInt()) {
-                case IndustryActivities.Manufacturing:
+                case IndustryActivities.MANUFACTURING:
                     industrySystem.setManufacturingCostIndex(value);
                     break;
-                case IndustryActivities.Copying:
+                case IndustryActivities.COPYING:
                     industrySystem.setCopyingCostIndex(value);
                     break;
-                case IndustryActivities.Invention:
+                case IndustryActivities.INVENTION:
                     industrySystem.setInventionCostIndex(value);
                     break;
-                case IndustryActivities.ResearchingMaterialEfficiency:
+                case IndustryActivities.RESEARCHING_MATERIAL_EFFICIENCY:
                     industrySystem.setResearchingMaterialEfficiencyCostIndex(value);
                     break;
-                case IndustryActivities.ResearchingTimeEfficiency:
+                case IndustryActivities.RESEARCHING_TIME_EFFICIENCY:
                     industrySystem.setResearchingTimeEfficiencyCostIndex(value);
                     break;
                 default:

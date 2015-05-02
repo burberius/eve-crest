@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class ItemTypeProcessor implements CrestApiProcessor<ItemType> {
     /**
-     * 24 hours
+     * Refresh interval: 24 hours.
      */
     private static final int REFRESH_INTERVAL = 1000 * 60 * 60 * 24;
 
@@ -44,7 +44,7 @@ public class ItemTypeProcessor implements CrestApiProcessor<ItemType> {
     @Override
     public ItemType parseEntry(final JsonNode node) {
         final String href = node.path(JsonPaths.HREF).asText();
-        final int id = Integer.parseInt(href.replaceAll(".*/([0-9]+)/$", "$1"));
-        return new ItemType(id, node.path(JsonPaths.NAME).asText());
+        final int typeId = Integer.parseInt(href.replaceAll(".*/([0-9]+)/$", "$1"));
+        return new ItemType(typeId, node.path(JsonPaths.NAME).asText());
     }
 }

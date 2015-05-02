@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class MarketPriceProcessor implements CrestApiProcessor<MarketPrice> {
     /**
-     * 24 hours
+     * Refresh interval: 24 hours.
      */
     private static final int REFRESH_INTERVAL = 1000 * 60 * 60 * 24;
 

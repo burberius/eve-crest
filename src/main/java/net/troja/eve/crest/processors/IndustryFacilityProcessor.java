@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class IndustryFacilityProcessor implements CrestApiProcessor<IndustryFacility> {
     /**
-     * 1 hour
+     * Refresh interval: 1 hour.
      */
     private static final int REFRESH_INTERVAL = 1000 * 60 * 60;
 

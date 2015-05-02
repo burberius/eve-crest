@@ -23,7 +23,6 @@ package net.troja.eve.crest;
 import java.io.IOException;
 
 import net.troja.eve.crest.processors.CrestApiProcessor;
-import net.troja.eve.crest.utils.DataProcessingException;
 import net.troja.eve.crest.utils.JsonPaths;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,9 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,29 +53,27 @@ public class CrestDataProcessor {
     }
 
     public <T> CrestContainer<T> downloadAndProcessData(final CrestApiProcessor<T> processor) {
+        CrestContainer<T> container = null;
         try {
-            final CrestContainer<T> container = new CrestContainer<T>();
             String data = accessor.getData(processor.getPath());
+            if (StringUtils.isBlank(data)) {
+                LOGGER.warn("No data to parse for " + processor.getClass().getSimpleName());
+                return container;
+            }
+            container = new CrestContainer<T>();
             String next = processData(processor, container, data);
             while (next != null) {
                 data = accessor.getDataPage(next);
                 next = processData(processor, container, data);
             }
             container.setTimestamp(System.currentTimeMillis());
-            return container;
-        } catch (final DataProcessingException e) {
-            LOGGER.error("Could not process data", e);
         } catch (final IOException e) {
             LOGGER.error("Could not download data", e);
         }
-        return null;
+        return container;
     }
 
-    private <T> String processData(final CrestApiProcessor<T> processor, final CrestContainer<T> container, final String data)
-            throws DataProcessingException {
-        if (StringUtils.isBlank(data)) {
-            throw new DataProcessingException("No data to parse");
-        }
+    private <T> String processData(final CrestApiProcessor<T> processor, final CrestContainer<T> container, final String data) {
         String next = null;
         try {
             final JsonFactory parserFactory = new JsonFactory();
@@ -105,13 +100,13 @@ public class CrestDataProcessor {
                 }
             }
         } catch (final IOException e) {
-            throw new DataProcessingException("Problems while parsing json data", e);
+            LOGGER.warn("Problems while parsing json data: " + e.getMessage());
         }
         return next;
     }
 
     private <T> void processItems(final CrestApiProcessor<T> processor, final CrestContainer<T> container, final JsonParser jsonParser)
-            throws IOException, JsonParseException, JsonProcessingException {
+            throws IOException {
         if (jsonParser.isExpectedStartArrayToken()) {
             while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
                 container.addEntry(processor.parseEntry((JsonNode) mapper.readTree(jsonParser)));
@@ -119,7 +114,7 @@ public class CrestDataProcessor {
         }
     }
 
-    private String processNext(final JsonParser jsonParser) throws JsonParseException, IOException {
+    private String processNext(final JsonParser jsonParser) throws IOException {
         String next = null;
         jsonParser.nextToken();
         if (JsonPaths.HREF.equals(jsonParser.getCurrentName())) {

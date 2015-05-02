@@ -127,11 +127,14 @@ public final class CrestHandler {
      * Shutdown background execution.
      */
     public void shutdown() {
-        scheduleService.shutdownNow();
+        if (scheduleService != null) {
+            scheduleService.shutdownNow();
+        }
         industryFacilities = null;
         itemTypes.clear();
         industrySystems.clear();
         marketPrices.clear();
+        instance = null;
     }
 
     public void updateData() {
