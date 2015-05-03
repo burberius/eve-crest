@@ -34,11 +34,11 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Backend class that handles the communication and the processors.
- *
+ * <p>
  * Do not use this class, use {@link CrestHandler} instead as it includes the caching of the data.
  */
-public abstract class AbstractCrestDataHandler {
-    private static final Logger LOGGER = LogManager.getLogger(AbstractCrestDataHandler.class);
+public class CrestDataHandler {
+    private static final Logger LOGGER = LogManager.getLogger(CrestDataHandler.class);
 
     public enum DataType {
         ITEM_TYPE, MARKET_PRICE, INDUSTRY_SYSTEM, INDUSTRY_FACILITY
@@ -48,6 +48,10 @@ public abstract class AbstractCrestDataHandler {
     private final Map<DataType, ProcessorConfiguration<?>> dataProcessors = new EnumMap<>(DataType.class);
     private final Map<DataType, Long> lastUpdates = new EnumMap<>(DataType.class);
     private final StatusProcessor statusProcessor = new StatusProcessor();
+
+    protected CrestDataHandler() {
+        super();
+    }
 
     protected void addProcessorConfiguration(final DataType type, final ProcessorConfiguration<?> config) {
         dataProcessors.put(type, config);

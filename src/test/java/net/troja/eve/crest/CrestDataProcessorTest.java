@@ -21,6 +21,7 @@ package net.troja.eve.crest;
  */
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -36,7 +37,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import net.troja.eve.crest.beans.ItemType;
+import net.troja.eve.crest.beans.Status;
 import net.troja.eve.crest.processors.ItemTypeProcessor;
+import net.troja.eve.crest.processors.StatusProcessor;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,10 +65,7 @@ public class CrestDataProcessorTest {
     public void testContainerParsing() throws IOException, URISyntaxException {
         final ItemTypeProcessor processor = mock(ItemTypeProcessor.class);
 
-        final URL resource = getClass().getResource(EXAMPLE_FILE);
-        final Path file = Paths.get(resource.toURI());
-        final String answer = new String(Files.readAllBytes(file));
-        when(accessor.getData(anyString())).thenReturn(answer);
+        when(accessor.getData(anyString())).thenReturn(getExampleData());
         when(processor.parseEntry((JsonNode) any())).thenReturn(new ItemType());
 
         final CrestContainer<ItemType> container = objectToTest.downloadAndProcessContainerData(processor);
@@ -75,11 +75,54 @@ public class CrestDataProcessorTest {
         assertThat(container.getEntries().size(), equalTo(5));
     }
 
+    private String getExampleData() throws URISyntaxException, IOException {
+        final URL resource = getClass().getResource(EXAMPLE_FILE);
+        final Path file = Paths.get(resource.toURI());
+        final String answer = new String(Files.readAllBytes(file));
+        return answer;
+    }
+
     @Test
-    public void testEmptyAnswer() throws IOException {
+    public void testEmptyAnswerInContainerParsing() throws IOException {
         final ItemTypeProcessor processor = mock(ItemTypeProcessor.class);
         when(accessor.getData(anyString())).thenReturn("  ");
         final CrestContainer<ItemType> container = objectToTest.downloadAndProcessContainerData(processor);
         assertThat(container, nullValue());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testExceptionWhenReadingDataInContainerParsing() throws IOException {
+        when(accessor.getData(anyString())).thenThrow(IOException.class);
+        final CrestContainer<ItemType> container = objectToTest.downloadAndProcessContainerData(new ItemTypeProcessor());
+        assertThat(container, nullValue());
+    }
+
+    @Test
+    public void testEmptyAnswerInParsing() throws IOException {
+        final StatusProcessor processor = mock(StatusProcessor.class);
+        when(accessor.getData(anyString())).thenReturn("  ");
+        final Status status = objectToTest.downloadAndProcessData(processor);
+        assertThat(status, nullValue());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testExceptionWhenReadingDataInParsing() throws IOException {
+        when(accessor.getData(anyString())).thenThrow(IOException.class);
+        final Status status = objectToTest.downloadAndProcessData(new StatusProcessor());
+        assertThat(status, nullValue());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testExceptionWhenParsingEntry() throws IOException, URISyntaxException {
+        final ItemTypeProcessor processor = mock(ItemTypeProcessor.class);
+
+        when(accessor.getData(anyString())).thenReturn(getExampleData());
+        when(processor.parseEntry((JsonNode) any())).thenThrow(IOException.class);
+
+        final CrestContainer<ItemType> container = objectToTest.downloadAndProcessContainerData(processor);
+        assertThat(container, notNullValue());
     }
 }

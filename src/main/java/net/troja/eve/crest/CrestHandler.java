@@ -44,7 +44,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Handles the complete crest communication, including caching of the data.
  */
-public final class CrestHandler extends AbstractCrestDataHandler {
+public final class CrestHandler extends CrestDataHandler {
     private static final Logger LOGGER = LogManager.getLogger(CrestHandler.class);
     private static final int MINUTES_30 = 30;
 
@@ -56,6 +56,7 @@ public final class CrestHandler extends AbstractCrestDataHandler {
     private ScheduledExecutorService scheduleService;
 
     public CrestHandler() {
+        super();
         addProcessorConfiguration(DataType.ITEM_TYPE, new ProcessorConfiguration<ItemType>(new ItemTypeProcessor(), getItemTypeConsumer()));
         addProcessorConfiguration(DataType.MARKET_PRICE,
                 new ProcessorConfiguration<MarketPrice>(new MarketPriceProcessor(), getMarketPriceConsumer()));

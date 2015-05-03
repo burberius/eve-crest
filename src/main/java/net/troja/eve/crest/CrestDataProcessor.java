@@ -59,10 +59,8 @@ public class CrestDataProcessor {
             if (!StringUtils.isBlank(data)) {
                 final JsonNode node = mapper.readTree(data);
                 result = processor.parseEntry(node);
-            } else {
-                if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn("No data to parse for " + processor.getClass().getSimpleName());
-                }
+            } else if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn("No data to parse for " + processor.getClass().getSimpleName());
             }
         } catch (final IOException e) {
             if (LOGGER.isErrorEnabled()) {
@@ -84,10 +82,8 @@ public class CrestDataProcessor {
                     next = processData(processor, container, data);
                 }
                 container.setTimestamp(System.currentTimeMillis());
-            } else {
-                if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn("No data to parse for " + processor.getClass().getSimpleName());
-                }
+            } else if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn("No data to parse for " + processor.getClass().getSimpleName());
             }
         } catch (final IOException e) {
             if (LOGGER.isErrorEnabled()) {
