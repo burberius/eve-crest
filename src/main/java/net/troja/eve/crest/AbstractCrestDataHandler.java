@@ -21,20 +21,11 @@ package net.troja.eve.crest;
  */
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
 
-import net.troja.eve.crest.beans.IndustryFacility;
-import net.troja.eve.crest.beans.IndustrySystem;
-import net.troja.eve.crest.beans.ItemType;
-import net.troja.eve.crest.beans.MarketPrice;
+import net.troja.eve.crest.beans.Status;
 import net.troja.eve.crest.processors.CrestApiProcessor;
-import net.troja.eve.crest.processors.IndustryFacilityProcessor;
-import net.troja.eve.crest.processors.IndustrySystemProcessor;
-import net.troja.eve.crest.processors.ItemTypeProcessor;
-import net.troja.eve.crest.processors.MarketPriceProcessor;
 import net.troja.eve.crest.processors.StatusProcessor;
 import net.troja.eve.crest.utils.ProcessorConfiguration;
 
@@ -46,25 +37,20 @@ import org.apache.logging.log4j.Logger;
  *
  * Do not use this class, use {@link CrestHandler} instead as it includes the caching of the data.
  */
-public abstract class CrestDataHandler {
-    private static final Logger LOGGER = LogManager.getLogger(CrestDataHandler.class);
+public abstract class AbstractCrestDataHandler {
+    private static final Logger LOGGER = LogManager.getLogger(AbstractCrestDataHandler.class);
 
     public enum DataType {
         ITEM_TYPE, MARKET_PRICE, INDUSTRY_SYSTEM, INDUSTRY_FACILITY
     }
 
-    protected CrestDataProcessor processor = new CrestDataProcessor();
-    protected final Map<DataType, ProcessorConfiguration<?>> dataProcessors = new EnumMap<>(DataType.class);
-    protected final Map<DataType, Long> lastUpdates = new EnumMap<>(DataType.class);
-    protected final StatusProcessor statusProcessor = new StatusProcessor();
+    private CrestDataProcessor processor = new CrestDataProcessor();
+    private final Map<DataType, ProcessorConfiguration<?>> dataProcessors = new EnumMap<>(DataType.class);
+    private final Map<DataType, Long> lastUpdates = new EnumMap<>(DataType.class);
+    private final StatusProcessor statusProcessor = new StatusProcessor();
 
-    public CrestDataHandler() {
-        dataProcessors.put(DataType.ITEM_TYPE, new ProcessorConfiguration<ItemType>(new ItemTypeProcessor(), getItemTypeConsumer()));
-        dataProcessors.put(DataType.MARKET_PRICE, new ProcessorConfiguration<MarketPrice>(new MarketPriceProcessor(), getMarketPriceConsumer()));
-        dataProcessors.put(DataType.INDUSTRY_SYSTEM, new ProcessorConfiguration<IndustrySystem>(new IndustrySystemProcessor(),
-                getIndustrySystemConsumer()));
-        dataProcessors.put(DataType.INDUSTRY_FACILITY, new ProcessorConfiguration<IndustryFacility>(new IndustryFacilityProcessor(),
-                getIndustryFacilityConsumer()));
+    protected void addProcessorConfiguration(final DataType type, final ProcessorConfiguration<?> config) {
+        dataProcessors.put(type, config);
     }
 
     /**
@@ -89,6 +75,14 @@ public abstract class CrestDataHandler {
         for (final DataType type : types) {
             dataProcessors.get(type).setEnabled(false);
         }
+    }
+
+    public void setProcessor(final CrestDataProcessor processor) {
+        this.processor = processor;
+    }
+
+    public Status getServerStatus() {
+        return processor.downloadAndProcessData(statusProcessor);
     }
 
     /**
@@ -124,9 +118,4 @@ public abstract class CrestDataHandler {
         config.getConsumer().accept(result.getEntries());
         return result.getTimestamp();
     }
-
-    protected abstract Consumer<List<IndustryFacility>> getIndustryFacilityConsumer();
-    protected abstract Consumer<List<IndustrySystem>> getIndustrySystemConsumer();
-    protected abstract Consumer<List<MarketPrice>> getMarketPriceConsumer();
-    protected abstract Consumer<List<ItemType>> getItemTypeConsumer();
 }

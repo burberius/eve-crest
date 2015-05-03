@@ -21,25 +21,25 @@ package net.troja.eve.crest.beans;
  */
 
 public class ItemType {
-    private int id;
+    private int typeId;
     private String name;
 
     public ItemType() {
         super();
     }
 
-    public ItemType(final int id, final String name) {
+    public ItemType(final int typeId, final String name) {
         super();
-        this.id = id;
+        this.typeId = typeId;
         this.name = name;
     }
 
-    public int getId() {
-        return id;
+    public int getTypeId() {
+        return typeId;
     }
 
-    public void setId(final int id) {
-        this.id = id;
+    public void setTypeId(final int typeId) {
+        this.typeId = typeId;
     }
 
     public String getName() {
@@ -52,6 +52,6 @@ public class ItemType {
 
     @Override
     public String toString() {
-        return "ItemType [id=" + id + ", name=" + name + "]";
+        return "ItemType [typeId=" + typeId + ", name=" + name + "]";
     }
 }

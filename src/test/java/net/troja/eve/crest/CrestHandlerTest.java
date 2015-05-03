@@ -25,7 +25,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import net.troja.eve.crest.CrestDataHandler.DataType;
+import net.troja.eve.crest.AbstractCrestDataHandler.DataType;
 
 import org.junit.Before;
 import org.junit.Test;

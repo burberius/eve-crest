@@ -27,7 +27,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import net.troja.eve.crest.CrestDataHandler.DataType;
+import net.troja.eve.crest.AbstractCrestDataHandler.DataType;
 import net.troja.eve.crest.beans.IndustryFacility;
 import net.troja.eve.crest.beans.IndustrySystem;
 import net.troja.eve.crest.beans.MarketPrice;

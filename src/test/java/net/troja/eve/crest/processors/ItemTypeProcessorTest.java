@@ -27,7 +27,6 @@ import java.io.IOException;
 
 import net.troja.eve.crest.CrestApiProcessorTest;
 import net.troja.eve.crest.beans.ItemType;
-import net.troja.eve.crest.processors.ItemTypeProcessor;
 
 import org.junit.Test;
 
@@ -42,7 +41,7 @@ public class ItemTypeProcessorTest extends CrestApiProcessorTest {
         final JsonNode node = loadAndParseData("ItemType.json");
         final ItemType type = processor.parseEntry(node);
 
-        assertThat(type.getId(), equalTo(2200));
+        assertThat(type.getTypeId(), equalTo(2200));
         assertThat(type.getName(), equalTo("Crate of Prototype Body Armor Fabric "));
     }
 }

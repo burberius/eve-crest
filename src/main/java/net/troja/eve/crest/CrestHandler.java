@@ -32,7 +32,11 @@ import net.troja.eve.crest.beans.IndustryFacility;
 import net.troja.eve.crest.beans.IndustrySystem;
 import net.troja.eve.crest.beans.ItemType;
 import net.troja.eve.crest.beans.MarketPrice;
-import net.troja.eve.crest.beans.Status;
+import net.troja.eve.crest.processors.IndustryFacilityProcessor;
+import net.troja.eve.crest.processors.IndustrySystemProcessor;
+import net.troja.eve.crest.processors.ItemTypeProcessor;
+import net.troja.eve.crest.processors.MarketPriceProcessor;
+import net.troja.eve.crest.utils.ProcessorConfiguration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +44,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Handles the complete crest communication, including caching of the data.
  */
-public final class CrestHandler extends CrestDataHandler {
+public final class CrestHandler extends AbstractCrestDataHandler {
     private static final Logger LOGGER = LogManager.getLogger(CrestHandler.class);
     private static final int MINUTES_30 = 30;
 
@@ -52,7 +56,13 @@ public final class CrestHandler extends CrestDataHandler {
     private ScheduledExecutorService scheduleService;
 
     public CrestHandler() {
-        super();
+        addProcessorConfiguration(DataType.ITEM_TYPE, new ProcessorConfiguration<ItemType>(new ItemTypeProcessor(), getItemTypeConsumer()));
+        addProcessorConfiguration(DataType.MARKET_PRICE,
+                new ProcessorConfiguration<MarketPrice>(new MarketPriceProcessor(), getMarketPriceConsumer()));
+        addProcessorConfiguration(DataType.INDUSTRY_SYSTEM, new ProcessorConfiguration<IndustrySystem>(new IndustrySystemProcessor(),
+                getIndustrySystemConsumer()));
+        addProcessorConfiguration(DataType.INDUSTRY_FACILITY, new ProcessorConfiguration<IndustryFacility>(new IndustryFacilityProcessor(),
+                getIndustryFacilityConsumer()));
     }
 
     /**
@@ -78,17 +88,15 @@ public final class CrestHandler extends CrestDataHandler {
         }
     }
 
-    @Override
-    protected Consumer<List<ItemType>> getItemTypeConsumer() {
+    private Consumer<List<ItemType>> getItemTypeConsumer() {
         return t -> {
             for (final ItemType itemType : t) {
-                itemTypes.put(itemType.getId(), itemType.getName());
+                itemTypes.put(itemType.getTypeId(), itemType.getName());
             }
         };
     }
 
-    @Override
-    protected Consumer<List<MarketPrice>> getMarketPriceConsumer() {
+    private Consumer<List<MarketPrice>> getMarketPriceConsumer() {
         return t -> {
             marketPrices.clear();
             for (final MarketPrice price : t) {
@@ -97,8 +105,7 @@ public final class CrestHandler extends CrestDataHandler {
         };
     }
 
-    @Override
-    protected Consumer<List<IndustrySystem>> getIndustrySystemConsumer() {
+    private Consumer<List<IndustrySystem>> getIndustrySystemConsumer() {
         return t -> {
             for (final IndustrySystem system : t) {
                 industrySystems.put(system.getSolarSystemName(), system);
@@ -106,13 +113,8 @@ public final class CrestHandler extends CrestDataHandler {
         };
     }
 
-    @Override
-    protected Consumer<List<IndustryFacility>> getIndustryFacilityConsumer() {
+    private Consumer<List<IndustryFacility>> getIndustryFacilityConsumer() {
         return t -> industryFacilities = t;
-    }
-
-    public void setProcessor(final CrestDataProcessor processor) {
-        this.processor = processor;
     }
 
     public String getItemName(final int itemTypeId) {
@@ -129,9 +131,5 @@ public final class CrestHandler extends CrestDataHandler {
 
     public IndustrySystem getIndustrySystem(final String solarSystemName) {
         return industrySystems.get(solarSystemName);
-    }
-
-    public Status getServerStatus() {
-        return processor.downloadAndProcessData(statusProcessor);
     }
 }
