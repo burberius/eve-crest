@@ -7,6 +7,7 @@ Library for the Eve Online CREST API
 
 Implemented Endpoints
 ---------------------
+* Status - "/"
 * Item types - "/types/"
 * Market Prices - "/market/prices/"
 * Industry Systems Cost Index - "/industry/systems/"
