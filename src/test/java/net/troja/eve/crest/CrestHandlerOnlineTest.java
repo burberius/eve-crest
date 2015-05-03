@@ -42,10 +42,11 @@ public class CrestHandlerOnlineTest {
     private static final String TRITANIUM = "Tritanium";
     private static final String TRANQUILITY = "TRANQUILITY";
 
-    private final CrestHandler objectToTest = CrestHandler.getInstance();
+    private CrestHandler objectToTest;
 
     @Before
     public void setUp() {
+        objectToTest = new CrestHandler();
         objectToTest.enableDataPrefetching(DataType.ITEM_TYPE, DataType.INDUSTRY_FACILITY, DataType.INDUSTRY_SYSTEM, DataType.MARKET_PRICE);
         objectToTest.updateData();
     }

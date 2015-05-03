@@ -27,7 +27,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import net.troja.eve.crest.CrestHandler.DataType;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -36,7 +35,7 @@ import org.mockito.MockitoAnnotations;
 public class CrestHandlerTest {
     private static final int REFRESH_INTERVAL = 1000 * 60 * 60 * 24;
 
-    private final CrestHandler handler = CrestHandler.getInstance();
+    private CrestHandler handler;
 
     @Mock
     private CrestDataProcessor processor;
@@ -44,12 +43,8 @@ public class CrestHandlerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        handler = new CrestHandler();
         handler.setProcessor(processor);
-    }
-
-    @After
-    public void tearDown() {
-        handler.shutdown();
     }
 
     @Test
@@ -68,7 +63,7 @@ public class CrestHandlerTest {
     @Test
     public void testTimeoutsMiss() {
         final CrestContainer<Object> crestContainer = new CrestContainer<Object>();
-        crestContainer.setTimestamp(System.currentTimeMillis() - REFRESH_INTERVAL);
+        crestContainer.setTimestamp(System.currentTimeMillis() - REFRESH_INTERVAL - 100);
         when(processor.downloadAndProcessContainerData(any())).thenReturn(crestContainer);
 
         handler.enableDataPrefetching(DataType.ITEM_TYPE);
@@ -95,5 +90,7 @@ public class CrestHandlerTest {
         handler.init();
 
         verify(processor, times(1)).downloadAndProcessContainerData(any());
+
+        handler.shutdown();
     }
 }

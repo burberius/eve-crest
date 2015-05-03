@@ -49,11 +49,13 @@ import org.apache.logging.log4j.Logger;
 /**
  * Handles the complete crest communication, including caching of the data.
  */
+/**
+ * @author didge
+ *
+ */
 public final class CrestHandler {
     private static final Logger LOGGER = LogManager.getLogger(CrestHandler.class);
     private static final int MINUTES_30 = 30;
-    private static final Object LOCK_OBJECT = new Object();
-    private static CrestHandler instance;
 
     private CrestDataProcessor processor = new CrestDataProcessor();
     private final Map<DataType, ProcessorConfiguration<?>> dataProcessors = new EnumMap<>(DataType.class);
@@ -71,27 +73,13 @@ public final class CrestHandler {
         ITEM_TYPE, MARKET_PRICE, INDUSTRY_SYSTEM, INDUSTRY_FACILITY
     }
 
-    private CrestHandler() {
+    public CrestHandler() {
         dataProcessors.put(DataType.ITEM_TYPE, new ProcessorConfiguration<ItemType>(new ItemTypeProcessor(), getItemTypeConsumer()));
         dataProcessors.put(DataType.MARKET_PRICE, new ProcessorConfiguration<MarketPrice>(new MarketPriceProcessor(), getMarketPriceConsumer()));
         dataProcessors.put(DataType.INDUSTRY_SYSTEM, new ProcessorConfiguration<IndustrySystem>(new IndustrySystemProcessor(),
                 getIndustrySystemConsumer()));
         dataProcessors.put(DataType.INDUSTRY_FACILITY, new ProcessorConfiguration<IndustryFacility>(new IndustryFacilityProcessor(),
                 getIndustryFacilityConsumer()));
-    }
-
-    /**
-     * Get the instance.
-     *
-     * @return CrestHandler instance
-     */
-    public static CrestHandler getInstance() {
-        synchronized (LOCK_OBJECT) {
-            if (instance == null) {
-                instance = new CrestHandler();
-            }
-        }
-        return instance;
     }
 
     /**
@@ -139,16 +127,11 @@ public final class CrestHandler {
         if (scheduleService != null) {
             scheduleService.shutdownNow();
         }
-        industryFacilities = null;
-        itemTypes.clear();
-        industrySystems.clear();
-        marketPrices.clear();
-        lastUpdates.clear();
-        synchronized (LOCK_OBJECT) {
-            instance = null;
-        }
     }
 
+    /**
+     * Update the cached data manually. Use this function of you don't want it fetched regularly! Otherwise use {@link #init() init()}
+     */
     public void updateData() {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Updating data");
