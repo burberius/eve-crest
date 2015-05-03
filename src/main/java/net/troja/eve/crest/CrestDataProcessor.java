@@ -56,7 +56,7 @@ public class CrestDataProcessor {
         T result = null;
         try {
             final String data = accessor.getData(processor.getPath());
-            if (!StringUtils.isBlank(data)) {
+            if (StringUtils.isNotBlank(data)) {
                 final JsonNode node = mapper.readTree(data);
                 result = processor.parseEntry(node);
             } else if (LOGGER.isWarnEnabled()) {
@@ -74,7 +74,7 @@ public class CrestDataProcessor {
         CrestContainer<T> container = null;
         try {
             String data = accessor.getData(processor.getPath());
-            if (!StringUtils.isBlank(data)) {
+            if (StringUtils.isNotBlank(data)) {
                 container = new CrestContainer<T>();
                 String next = processData(processor, container, data);
                 while (next != null) {
