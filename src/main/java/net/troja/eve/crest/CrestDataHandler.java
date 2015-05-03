@@ -92,7 +92,8 @@ public abstract class CrestDataHandler {
     }
 
     /**
-     * Update the cached data manually. Use this function of you don't want it fetched regularly! Otherwise use {@link #init() init()}
+     * Update the cached data manually. Use this function of you don't want it fetched regularly! Otherwise use {@link CrestHandler#init()
+     * CrestHandler.init()}
      */
     public void updateData() {
         if (LOGGER.isInfoEnabled()) {
