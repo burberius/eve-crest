@@ -31,6 +31,8 @@ import net.troja.eve.crest.CrestHandler.DataType;
 import net.troja.eve.crest.beans.IndustryFacility;
 import net.troja.eve.crest.beans.IndustrySystem;
 import net.troja.eve.crest.beans.MarketPrice;
+import net.troja.eve.crest.beans.Status;
+import net.troja.eve.crest.beans.Status.State;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +40,7 @@ import org.junit.Test;
 public class CrestHandlerOnlineTest {
     private static final String JITA = "Jita";
     private static final String TRITANIUM = "Tritanium";
+    private static final String TRANQUILITY = "TRANQUILITY";
 
     private final CrestHandler objectToTest = CrestHandler.getInstance();
 
@@ -72,5 +75,13 @@ public class CrestHandlerOnlineTest {
         final IndustrySystem industrySystem = objectToTest.getIndustrySystem(JITA);
         assertThat(industrySystem, notNullValue());
         assertThat(industrySystem.getSolarSystemName(), equalTo(JITA));
+    }
+
+    @Test
+    public void testServerStatus() {
+        final Status serverStatus = objectToTest.getServerStatus();
+        assertThat(serverStatus.getServerName(), equalTo(TRANQUILITY));
+        assertThat(serverStatus.getUserCountsEve(), greaterThan(1));
+        assertThat(serverStatus.getServiceStatusEve(), equalTo(State.ONLINE));
     }
 }

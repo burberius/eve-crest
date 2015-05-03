@@ -32,7 +32,7 @@ public class CrestDataProcessorOnlineTest {
     @Test
     public void testDownloadOfPagedData() {
         final CrestDataProcessor processor = new CrestDataProcessor();
-        final CrestContainer<ItemType> data = processor.downloadAndProcessData(new ItemTypeProcessor());
+        final CrestContainer<ItemType> data = processor.downloadAndProcessContainerData(new ItemTypeProcessor());
         assertThat(data, notNullValue());
         assertThat(data.getTotalCount(), equalTo(data.getEntries().size()));
     }

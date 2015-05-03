@@ -46,15 +46,15 @@ public class IndustrySystemProcessor implements CrestApiProcessor<IndustrySystem
 
     @Override
     public IndustrySystem parseEntry(final JsonNode node) {
-        final JsonNode solarSystem = node.path(JsonPaths.SOLARSYSTEM);
+        final JsonNode solarSystem = node.path(JsonPaths.SOLAR_SYSTEM);
         final int solarSystemId = solarSystem.path(JsonPaths.ID).asInt();
         final String name = solarSystem.path(JsonPaths.NAME).asText();
         final IndustrySystem industrySystem = new IndustrySystem(solarSystemId, name);
-        final Iterator<JsonNode> elements = node.path(JsonPaths.SYSTEMCOSTINDICES).elements();
+        final Iterator<JsonNode> elements = node.path(JsonPaths.SYSTEM_COST_INDICES).elements();
         while (elements.hasNext()) {
             final JsonNode next = elements.next();
-            final double value = next.path(JsonPaths.COSTINDEX).asDouble();
-            switch (next.path(JsonPaths.ACTIVITYID).asInt()) {
+            final double value = next.path(JsonPaths.COST_INDEX).asDouble();
+            switch (next.path(JsonPaths.ACTIVITY_ID).asInt()) {
                 case IndustryActivities.MANUFACTURING:
                     industrySystem.setManufacturingCostIndex(value);
                     break;

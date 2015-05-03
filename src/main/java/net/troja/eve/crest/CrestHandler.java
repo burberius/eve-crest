@@ -20,6 +20,7 @@ package net.troja.eve.crest;
  * ========================================================================
  */
 
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,11 +34,13 @@ import net.troja.eve.crest.beans.IndustryFacility;
 import net.troja.eve.crest.beans.IndustrySystem;
 import net.troja.eve.crest.beans.ItemType;
 import net.troja.eve.crest.beans.MarketPrice;
+import net.troja.eve.crest.beans.Status;
 import net.troja.eve.crest.processors.CrestApiProcessor;
 import net.troja.eve.crest.processors.IndustryFacilityProcessor;
 import net.troja.eve.crest.processors.IndustrySystemProcessor;
 import net.troja.eve.crest.processors.ItemTypeProcessor;
 import net.troja.eve.crest.processors.MarketPriceProcessor;
+import net.troja.eve.crest.processors.StatusProcessor;
 import net.troja.eve.crest.utils.ProcessorConfiguration;
 
 import org.apache.logging.log4j.LogManager;
@@ -47,13 +50,15 @@ import org.apache.logging.log4j.Logger;
  * Handles the complete crest communication, including caching of the data.
  */
 public final class CrestHandler {
-    private static final int MINUTES_30 = 30;
     private static final Logger LOGGER = LogManager.getLogger(CrestHandler.class);
+    private static final int MINUTES_30 = 30;
+    private static final Object LOCK_OBJECT = new Object();
     private static CrestHandler instance;
 
     private CrestDataProcessor processor = new CrestDataProcessor();
-    private final Map<DataType, ProcessorConfiguration<?>> dataProcessors = new ConcurrentHashMap<>();
-    private final Map<DataType, Long> lastUpdates = new ConcurrentHashMap<>();
+    private final Map<DataType, ProcessorConfiguration<?>> dataProcessors = new EnumMap<>(DataType.class);
+    private final Map<DataType, Long> lastUpdates = new EnumMap<>(DataType.class);
+    private final StatusProcessor statusProcessor = new StatusProcessor();
 
     private final Map<Integer, String> itemTypes = new ConcurrentHashMap<>();
     private final Map<Integer, MarketPrice> marketPrices = new ConcurrentHashMap<>();
@@ -80,9 +85,11 @@ public final class CrestHandler {
      *
      * @return CrestHandler instance
      */
-    public static synchronized CrestHandler getInstance() {
-        if (instance == null) {
-            instance = new CrestHandler();
+    public static CrestHandler getInstance() {
+        synchronized (LOCK_OBJECT) {
+            if (instance == null) {
+                instance = new CrestHandler();
+            }
         }
         return instance;
     }
@@ -118,7 +125,9 @@ public final class CrestHandler {
         if ((scheduleService == null) || scheduleService.isShutdown()) {
             scheduleService = Executors.newScheduledThreadPool(1);
         }
-        LOGGER.info("Scheduling data updates");
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Scheduling data updates");
+        }
         scheduleService.scheduleAtFixedRate(() -> updateData(), MINUTES_30, MINUTES_30, TimeUnit.MINUTES);
         updateData();
     }
@@ -134,27 +143,35 @@ public final class CrestHandler {
         itemTypes.clear();
         industrySystems.clear();
         marketPrices.clear();
-        instance = null;
+        lastUpdates.clear();
+        synchronized (LOCK_OBJECT) {
+            instance = null;
+        }
     }
 
     public void updateData() {
-        LOGGER.info("Updating data");
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Updating data");
+        }
         for (final Entry<DataType, ProcessorConfiguration<?>> entry : dataProcessors.entrySet()) {
             final ProcessorConfiguration<?> procConfig = entry.getValue();
             Long lastUpdate = lastUpdates.get(entry.getKey());
             if (lastUpdate == null) {
-                lastUpdate = 0l;
+                lastUpdate = 0L;
             }
             final int refreshInterval = procConfig.getProcessor().getRefreshInterval();
             if (procConfig.isEnabled() && (lastUpdate < (System.currentTimeMillis() - refreshInterval))) {
                 lastUpdates.put(entry.getKey(), updateData(procConfig));
             }
         }
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Finished updating data");
+        }
     }
 
     private <T> long updateData(final ProcessorConfiguration<T> config) {
         final CrestApiProcessor<T> typeProcessor = config.getProcessor();
-        final CrestContainer<T> result = processor.downloadAndProcessData(typeProcessor);
+        final CrestContainer<T> result = processor.downloadAndProcessContainerData(typeProcessor);
         config.getConsumer().accept(result.getEntries());
         return result.getTimestamp();
     }
@@ -206,5 +223,9 @@ public final class CrestHandler {
 
     public IndustrySystem getIndustrySystem(final String solarSystemName) {
         return industrySystems.get(solarSystemName);
+    }
+
+    public Status getServerStatus() {
+        return processor.downloadAndProcessData(statusProcessor);
     }
 }

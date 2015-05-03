@@ -43,8 +43,8 @@ public class MarketPriceProcessor implements CrestApiProcessor<MarketPrice> {
 
     @Override
     public MarketPrice parseEntry(final JsonNode node) {
-        final double adjustedPrice = node.path(JsonPaths.ADJUSTEDPRICE).asDouble();
-        final double averagePrice = node.path(JsonPaths.AVERAGEPRICE).asDouble();
+        final double adjustedPrice = node.path(JsonPaths.ADJUSTED_PRICE).asDouble();
+        final double averagePrice = node.path(JsonPaths.AVERAGE_PRICE).asDouble();
         final int typeId = node.path(JsonPaths.TYPE).path(JsonPaths.ID).asInt();
         return new MarketPrice(typeId, adjustedPrice, averagePrice);
     }

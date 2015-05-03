@@ -68,7 +68,7 @@ public class CrestDataProcessorTest {
         when(accessor.getData(anyString())).thenReturn(answer);
         when(processor.parseEntry((JsonNode) any())).thenReturn(new ItemType());
 
-        final CrestContainer<ItemType> container = objectToTest.downloadAndProcessData(processor);
+        final CrestContainer<ItemType> container = objectToTest.downloadAndProcessContainerData(processor);
 
         assertThat(container.getPageCount(), equalTo(23));
         assertThat(container.getTotalCount(), equalTo(22406));
@@ -79,7 +79,7 @@ public class CrestDataProcessorTest {
     public void testEmptyAnswer() throws IOException {
         final ItemTypeProcessor processor = mock(ItemTypeProcessor.class);
         when(accessor.getData(anyString())).thenReturn("  ");
-        final CrestContainer<ItemType> container = objectToTest.downloadAndProcessData(processor);
+        final CrestContainer<ItemType> container = objectToTest.downloadAndProcessContainerData(processor);
         assertThat(container, nullValue());
     }
 }

@@ -64,7 +64,9 @@ public class CrestAccessor {
                     result = EntityUtils.toString(entity);
                 }
             } else {
-                LOGGER.warn("Got " + status + " for the query " + address);
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn("Got " + status + " for the query " + address);
+                }
             }
         } finally {
             request.reset();

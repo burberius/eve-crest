@@ -56,26 +56,26 @@ public class CrestHandlerTest {
     public void testTimeoutsHit() {
         final CrestContainer<Object> crestContainer = new CrestContainer<Object>();
         crestContainer.setTimestamp(System.currentTimeMillis() - 100);
-        when(processor.downloadAndProcessData(any())).thenReturn(crestContainer);
+        when(processor.downloadAndProcessContainerData(any())).thenReturn(crestContainer);
 
         handler.enableDataPrefetching(DataType.ITEM_TYPE);
         handler.updateData();
         handler.updateData();
 
-        verify(processor, times(1)).downloadAndProcessData(any());
+        verify(processor, times(1)).downloadAndProcessContainerData(any());
     }
 
     @Test
     public void testTimeoutsMiss() {
         final CrestContainer<Object> crestContainer = new CrestContainer<Object>();
         crestContainer.setTimestamp(System.currentTimeMillis() - REFRESH_INTERVAL);
-        when(processor.downloadAndProcessData(any())).thenReturn(crestContainer);
+        when(processor.downloadAndProcessContainerData(any())).thenReturn(crestContainer);
 
         handler.enableDataPrefetching(DataType.ITEM_TYPE);
         handler.updateData();
         handler.updateData();
 
-        verify(processor, times(2)).downloadAndProcessData(any());
+        verify(processor, times(2)).downloadAndProcessContainerData(any());
     }
 
     @Test
@@ -83,6 +83,17 @@ public class CrestHandlerTest {
         handler.disableDataPrefetching(DataType.ITEM_TYPE, DataType.INDUSTRY_FACILITY, DataType.INDUSTRY_SYSTEM, DataType.MARKET_PRICE);
         handler.updateData();
 
-        verify(processor, never()).downloadAndProcessData(any());
+        verify(processor, never()).downloadAndProcessContainerData(any());
+    }
+
+    @Test
+    public void testInit() {
+        final CrestContainer<Object> crestContainer = new CrestContainer<Object>();
+        when(processor.downloadAndProcessContainerData(any())).thenReturn(crestContainer);
+
+        handler.enableDataPrefetching(DataType.ITEM_TYPE);
+        handler.init();
+
+        verify(processor, times(1)).downloadAndProcessContainerData(any());
     }
 }

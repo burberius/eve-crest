@@ -52,7 +52,23 @@ public class CrestDataProcessor {
         this.accessor = accessor;
     }
 
-    public <T> CrestContainer<T> downloadAndProcessData(final CrestApiProcessor<T> processor) {
+    public <T> T downloadAndProcessData(final CrestApiProcessor<T> processor) {
+        T result = null;
+        try {
+            final String data = accessor.getData(processor.getPath());
+            if (StringUtils.isBlank(data)) {
+                LOGGER.warn("No data to parse for " + processor.getClass().getSimpleName());
+                return result;
+            }
+            final JsonNode node = mapper.readTree(data);
+            result = processor.parseEntry(node);
+        } catch (final IOException e) {
+            LOGGER.error("Could not download data", e);
+        }
+        return result;
+    }
+
+    public <T> CrestContainer<T> downloadAndProcessContainerData(final CrestApiProcessor<T> processor) {
         CrestContainer<T> container = null;
         try {
             String data = accessor.getData(processor.getPath());
@@ -100,7 +116,7 @@ public class CrestDataProcessor {
                 }
             }
         } catch (final IOException e) {
-            LOGGER.warn("Problems while parsing json data: " + e.getMessage());
+            LOGGER.warn("Problems while parsing json data: " + e.getMessage(), e);
         }
         return next;
     }

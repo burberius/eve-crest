@@ -20,36 +20,37 @@ package net.troja.eve.crest.processors;
  * ========================================================================
  */
 
-import net.troja.eve.crest.beans.IndustryFacility;
+import net.troja.eve.crest.beans.Status;
+import net.troja.eve.crest.beans.Status.State;
 import net.troja.eve.crest.utils.JsonPaths;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class IndustryFacilityProcessor implements CrestApiProcessor<IndustryFacility> {
-    /**
-     * Refresh interval: 1 hour.
-     */
-    private static final int REFRESH_INTERVAL = 1000 * 60 * 60;
+public class StatusProcessor implements CrestApiProcessor<Status> {
 
     @Override
     public String getPath() {
-        return "/industry/facilities/";
+        return "/";
     }
 
     @Override
     public int getRefreshInterval() {
-        return REFRESH_INTERVAL;
+        return 5000;
     }
 
     @Override
-    public IndustryFacility parseEntry(final JsonNode node) {
-        final int facilityId = node.path(JsonPaths.FACILITY_ID).asInt();
-        final String name = node.path(JsonPaths.NAME).asText();
-        final int regionId = node.path(JsonPaths.REGION).path(JsonPaths.ID).asInt();
-        final long ownerId = node.path(JsonPaths.OWNER).path(JsonPaths.ID).asLong();
-        final int solarSystemId = node.path(JsonPaths.SOLAR_SYSTEM).path(JsonPaths.ID).asInt();
-        final int typeId = node.path(JsonPaths.TYPE).path(JsonPaths.ID).asInt();
-        final float tax = (float) node.path(JsonPaths.TAX).asDouble();
-        return new IndustryFacility(facilityId, name, tax, solarSystemId, regionId, ownerId, typeId);
+    public Status parseEntry(final JsonNode node) {
+        final Status status = new Status();
+        status.setServerName(node.path(JsonPaths.SERVER_NAME).asText());
+        status.setServerVersion(node.path(JsonPaths.SERVER_VERSION).asText());
+        final JsonNode serviceStatus = node.path(JsonPaths.SERVICE_STATUS);
+        status.setServiceStatusDust(State.parse(serviceStatus.path(JsonPaths.DUST).asText()));
+        status.setServiceStatusEve(State.parse(serviceStatus.path(JsonPaths.EVE).asText()));
+        status.setServiceStatusServer(State.parse(serviceStatus.path(JsonPaths.SERVER).asText()));
+        final JsonNode userCount = node.path(JsonPaths.USER_COUNTS);
+        status.setUserCountsDust(userCount.path(JsonPaths.DUST).asInt());
+        status.setUserCountsEve(userCount.path(JsonPaths.EVE).asInt());
+        return status;
     }
+
 }

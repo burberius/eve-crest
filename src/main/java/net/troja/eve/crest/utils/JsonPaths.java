@@ -25,16 +25,23 @@ public final class JsonPaths {
     public static final String NAME = "name";
     public static final String TYPE = "type";
     public static final String ID = "id";
-    public static final String ADJUSTEDPRICE = "adjustedPrice";
-    public static final String AVERAGEPRICE = "averagePrice";
-    public static final String SOLARSYSTEM = "solarSystem";
-    public static final String SYSTEMCOSTINDICES = "systemCostIndices";
-    public static final String COSTINDEX = "costIndex";
-    public static final String ACTIVITYID = "activityID";
-    public static final String FACILITYID = "facilityID";
+    public static final String ADJUSTED_PRICE = "adjustedPrice";
+    public static final String AVERAGE_PRICE = "averagePrice";
+    public static final String SOLAR_SYSTEM = "solarSystem";
+    public static final String SYSTEM_COST_INDICES = "systemCostIndices";
+    public static final String COST_INDEX = "costIndex";
+    public static final String ACTIVITY_ID = "activityID";
+    public static final String FACILITY_ID = "facilityID";
     public static final String REGION = "region";
     public static final String TAX = "tax";
     public static final String OWNER = "owner";
+    public static final String SERVER_NAME = "serverName";
+    public static final String SERVER_VERSION = "serverVersion";
+    public static final String SERVICE_STATUS = "serviceStatus";
+    public static final String USER_COUNTS = "userCounts";
+    public static final String EVE = "eve";
+    public static final String DUST = "dust";
+    public static final String SERVER = "server";
 
     private JsonPaths() {
     }
