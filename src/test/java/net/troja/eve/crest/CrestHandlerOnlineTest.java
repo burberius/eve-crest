@@ -27,14 +27,13 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import net.troja.eve.crest.CrestHandler.DataType;
+import net.troja.eve.crest.CrestDataHandler.DataType;
 import net.troja.eve.crest.beans.IndustryFacility;
 import net.troja.eve.crest.beans.IndustrySystem;
 import net.troja.eve.crest.beans.MarketPrice;
 import net.troja.eve.crest.beans.Status;
 import net.troja.eve.crest.beans.Status.State;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class CrestHandlerOnlineTest {
@@ -42,22 +41,19 @@ public class CrestHandlerOnlineTest {
     private static final String TRITANIUM = "Tritanium";
     private static final String TRANQUILITY = "TRANQUILITY";
 
-    private CrestHandler objectToTest;
-
-    @Before
-    public void setUp() {
-        objectToTest = new CrestHandler();
-        objectToTest.enableDataPrefetching(DataType.ITEM_TYPE, DataType.INDUSTRY_FACILITY, DataType.INDUSTRY_SYSTEM, DataType.MARKET_PRICE);
-        objectToTest.updateData();
-    }
+    private final CrestHandler objectToTest = new CrestHandler();
 
     @Test
     public void testDownloadOfItemTypes() {
+        objectToTest.enableDataPrefetching(DataType.ITEM_TYPE);
+        objectToTest.updateData();
         assertThat(objectToTest.getItemName(34), equalTo(TRITANIUM));
     }
 
     @Test
     public void testDownloadOfMarketPrices() {
+        objectToTest.enableDataPrefetching(DataType.MARKET_PRICE);
+        objectToTest.updateData();
         final MarketPrice marketPrice = objectToTest.getMarketPrice(34);
         assertThat(marketPrice, notNullValue());
         assertThat(marketPrice.getAdjustedPrice(), greaterThan(0d));
@@ -66,6 +62,8 @@ public class CrestHandlerOnlineTest {
 
     @Test
     public void testDownloadOfIndustryFacilities() {
+        objectToTest.enableDataPrefetching(DataType.INDUSTRY_FACILITY);
+        objectToTest.updateData();
         final List<IndustryFacility> industryFacilities = objectToTest.getIndustryFacilities();
         assertThat(industryFacilities, notNullValue());
         assertThat(industryFacilities.size(), greaterThan(1));
@@ -73,6 +71,8 @@ public class CrestHandlerOnlineTest {
 
     @Test
     public void testDownloadOfIndustrySystems() {
+        objectToTest.enableDataPrefetching(DataType.INDUSTRY_SYSTEM);
+        objectToTest.updateData();
         final IndustrySystem industrySystem = objectToTest.getIndustrySystem(JITA);
         assertThat(industrySystem, notNullValue());
         assertThat(industrySystem.getSolarSystemName(), equalTo(JITA));

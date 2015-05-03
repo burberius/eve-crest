@@ -56,14 +56,18 @@ public class CrestDataProcessor {
         T result = null;
         try {
             final String data = accessor.getData(processor.getPath());
-            if (StringUtils.isBlank(data)) {
-                LOGGER.warn("No data to parse for " + processor.getClass().getSimpleName());
-                return result;
+            if (!StringUtils.isBlank(data)) {
+                final JsonNode node = mapper.readTree(data);
+                result = processor.parseEntry(node);
+            } else {
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn("No data to parse for " + processor.getClass().getSimpleName());
+                }
             }
-            final JsonNode node = mapper.readTree(data);
-            result = processor.parseEntry(node);
         } catch (final IOException e) {
-            LOGGER.error("Could not download data", e);
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Could not download data", e);
+            }
         }
         return result;
     }
@@ -72,19 +76,23 @@ public class CrestDataProcessor {
         CrestContainer<T> container = null;
         try {
             String data = accessor.getData(processor.getPath());
-            if (StringUtils.isBlank(data)) {
-                LOGGER.warn("No data to parse for " + processor.getClass().getSimpleName());
-                return container;
+            if (!StringUtils.isBlank(data)) {
+                container = new CrestContainer<T>();
+                String next = processData(processor, container, data);
+                while (next != null) {
+                    data = accessor.getDataPage(next);
+                    next = processData(processor, container, data);
+                }
+                container.setTimestamp(System.currentTimeMillis());
+            } else {
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn("No data to parse for " + processor.getClass().getSimpleName());
+                }
             }
-            container = new CrestContainer<T>();
-            String next = processData(processor, container, data);
-            while (next != null) {
-                data = accessor.getDataPage(next);
-                next = processData(processor, container, data);
-            }
-            container.setTimestamp(System.currentTimeMillis());
         } catch (final IOException e) {
-            LOGGER.error("Could not download data", e);
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Could not download data", e);
+            }
         }
         return container;
     }
@@ -116,7 +124,9 @@ public class CrestDataProcessor {
                 }
             }
         } catch (final IOException e) {
-            LOGGER.warn("Problems while parsing json data: " + e.getMessage(), e);
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn("Problems while parsing json data: " + e.getMessage(), e);
+            }
         }
         return next;
     }

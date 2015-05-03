@@ -20,10 +20,8 @@ package net.troja.eve.crest;
  * ========================================================================
  */
 
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -35,13 +33,6 @@ import net.troja.eve.crest.beans.IndustrySystem;
 import net.troja.eve.crest.beans.ItemType;
 import net.troja.eve.crest.beans.MarketPrice;
 import net.troja.eve.crest.beans.Status;
-import net.troja.eve.crest.processors.CrestApiProcessor;
-import net.troja.eve.crest.processors.IndustryFacilityProcessor;
-import net.troja.eve.crest.processors.IndustrySystemProcessor;
-import net.troja.eve.crest.processors.ItemTypeProcessor;
-import net.troja.eve.crest.processors.MarketPriceProcessor;
-import net.troja.eve.crest.processors.StatusProcessor;
-import net.troja.eve.crest.utils.ProcessorConfiguration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,18 +40,9 @@ import org.apache.logging.log4j.Logger;
 /**
  * Handles the complete crest communication, including caching of the data.
  */
-/**
- * @author didge
- *
- */
-public final class CrestHandler {
+public final class CrestHandler extends CrestDataHandler {
     private static final Logger LOGGER = LogManager.getLogger(CrestHandler.class);
     private static final int MINUTES_30 = 30;
-
-    private CrestDataProcessor processor = new CrestDataProcessor();
-    private final Map<DataType, ProcessorConfiguration<?>> dataProcessors = new EnumMap<>(DataType.class);
-    private final Map<DataType, Long> lastUpdates = new EnumMap<>(DataType.class);
-    private final StatusProcessor statusProcessor = new StatusProcessor();
 
     private final Map<Integer, String> itemTypes = new ConcurrentHashMap<>();
     private final Map<Integer, MarketPrice> marketPrices = new ConcurrentHashMap<>();
@@ -69,41 +51,8 @@ public final class CrestHandler {
 
     private ScheduledExecutorService scheduleService;
 
-    public enum DataType {
-        ITEM_TYPE, MARKET_PRICE, INDUSTRY_SYSTEM, INDUSTRY_FACILITY
-    }
-
     public CrestHandler() {
-        dataProcessors.put(DataType.ITEM_TYPE, new ProcessorConfiguration<ItemType>(new ItemTypeProcessor(), getItemTypeConsumer()));
-        dataProcessors.put(DataType.MARKET_PRICE, new ProcessorConfiguration<MarketPrice>(new MarketPriceProcessor(), getMarketPriceConsumer()));
-        dataProcessors.put(DataType.INDUSTRY_SYSTEM, new ProcessorConfiguration<IndustrySystem>(new IndustrySystemProcessor(),
-                getIndustrySystemConsumer()));
-        dataProcessors.put(DataType.INDUSTRY_FACILITY, new ProcessorConfiguration<IndustryFacility>(new IndustryFacilityProcessor(),
-                getIndustryFacilityConsumer()));
-    }
-
-    /**
-     * Enable fetching of the data in the background for the given types.
-     *
-     * @param types
-     *            DataType(s) to enable
-     */
-    public void enableDataPrefetching(final DataType... types) {
-        for (final DataType type : types) {
-            dataProcessors.get(type).setEnabled(true);
-        }
-    }
-
-    /**
-     * Enable fetching of the data in the background for the given types.
-     *
-     * @param types
-     *            DataType(s) to enable
-     */
-    public void disableDataPrefetching(final DataType... types) {
-        for (final DataType type : types) {
-            dataProcessors.get(type).setEnabled(false);
-        }
+        super();
     }
 
     /**
@@ -129,37 +78,8 @@ public final class CrestHandler {
         }
     }
 
-    /**
-     * Update the cached data manually. Use this function of you don't want it fetched regularly! Otherwise use {@link #init() init()}
-     */
-    public void updateData() {
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Updating data");
-        }
-        for (final Entry<DataType, ProcessorConfiguration<?>> entry : dataProcessors.entrySet()) {
-            final ProcessorConfiguration<?> procConfig = entry.getValue();
-            Long lastUpdate = lastUpdates.get(entry.getKey());
-            if (lastUpdate == null) {
-                lastUpdate = 0L;
-            }
-            final int refreshInterval = procConfig.getProcessor().getRefreshInterval();
-            if (procConfig.isEnabled() && (lastUpdate < (System.currentTimeMillis() - refreshInterval))) {
-                lastUpdates.put(entry.getKey(), updateData(procConfig));
-            }
-        }
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Finished updating data");
-        }
-    }
-
-    private <T> long updateData(final ProcessorConfiguration<T> config) {
-        final CrestApiProcessor<T> typeProcessor = config.getProcessor();
-        final CrestContainer<T> result = processor.downloadAndProcessContainerData(typeProcessor);
-        config.getConsumer().accept(result.getEntries());
-        return result.getTimestamp();
-    }
-
-    private Consumer<List<ItemType>> getItemTypeConsumer() {
+    @Override
+    protected Consumer<List<ItemType>> getItemTypeConsumer() {
         return t -> {
             for (final ItemType itemType : t) {
                 itemTypes.put(itemType.getId(), itemType.getName());
@@ -167,7 +87,8 @@ public final class CrestHandler {
         };
     }
 
-    private Consumer<List<MarketPrice>> getMarketPriceConsumer() {
+    @Override
+    protected Consumer<List<MarketPrice>> getMarketPriceConsumer() {
         return t -> {
             marketPrices.clear();
             for (final MarketPrice price : t) {
@@ -176,7 +97,8 @@ public final class CrestHandler {
         };
     }
 
-    private Consumer<List<IndustrySystem>> getIndustrySystemConsumer() {
+    @Override
+    protected Consumer<List<IndustrySystem>> getIndustrySystemConsumer() {
         return t -> {
             for (final IndustrySystem system : t) {
                 industrySystems.put(system.getSolarSystemName(), system);
@@ -184,7 +106,8 @@ public final class CrestHandler {
         };
     }
 
-    private Consumer<List<IndustryFacility>> getIndustryFacilityConsumer() {
+    @Override
+    protected Consumer<List<IndustryFacility>> getIndustryFacilityConsumer() {
         return t -> industryFacilities = t;
     }
 

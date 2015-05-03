@@ -25,7 +25,7 @@ public class Status {
         OFFLINE, ONLINE;
 
         public static State parse(final String text) {
-            if (ONLINE.name().toLowerCase().equals(text)) {
+            if (ONLINE.name().equalsIgnoreCase(text)) {
                 return ONLINE;
             } else {
                 return OFFLINE;

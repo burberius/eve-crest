@@ -27,6 +27,10 @@ import net.troja.eve.crest.utils.JsonPaths;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class StatusProcessor implements CrestApiProcessor<Status> {
+    /**
+     * Refresh interval: 5 seconds.
+     */
+    private static final int REFRESH_INTERVAL = 1000 * 5;
 
     @Override
     public String getPath() {
@@ -35,7 +39,7 @@ public class StatusProcessor implements CrestApiProcessor<Status> {
 
     @Override
     public int getRefreshInterval() {
-        return 5000;
+        return REFRESH_INTERVAL;
     }
 
     @Override
