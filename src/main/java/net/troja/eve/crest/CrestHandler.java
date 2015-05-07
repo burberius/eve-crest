@@ -44,7 +44,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Handles the complete crest communication, including caching of the data.
  */
-public final class CrestHandler extends CrestDataHandler {
+public class CrestHandler extends CrestDataHandler {
     private static final Logger LOGGER = LogManager.getLogger(CrestHandler.class);
     private static final int MINUTES_30 = 30;
 
