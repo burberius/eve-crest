@@ -54,15 +54,16 @@ public class CrestHandler extends CrestDataHandler {
     private final Map<String, IndustrySystem> industrySystems = new ConcurrentHashMap<>();
 
     private ScheduledExecutorService scheduleService;
+    private boolean initialized;
 
     public CrestHandler() {
         super();
-        addProcessorConfiguration(DataType.ITEM_TYPE, new ProcessorConfiguration<ItemType>(new ItemTypeProcessor(), getItemTypeConsumer()));
-        addProcessorConfiguration(DataType.MARKET_PRICE,
-                new ProcessorConfiguration<MarketPrice>(new MarketPriceProcessor(), getMarketPriceConsumer()));
-        addProcessorConfiguration(DataType.INDUSTRY_SYSTEM, new ProcessorConfiguration<IndustrySystem>(new IndustrySystemProcessor(),
+        super.addProcessorConfiguration(DataType.ITEM_TYPE, new ProcessorConfiguration<ItemType>(new ItemTypeProcessor(), getItemTypeConsumer()));
+        super.addProcessorConfiguration(DataType.MARKET_PRICE, new ProcessorConfiguration<MarketPrice>(new MarketPriceProcessor(),
+                getMarketPriceConsumer()));
+        super.addProcessorConfiguration(DataType.INDUSTRY_SYSTEM, new ProcessorConfiguration<IndustrySystem>(new IndustrySystemProcessor(),
                 getIndustrySystemConsumer()));
-        addProcessorConfiguration(DataType.INDUSTRY_FACILITY, new ProcessorConfiguration<IndustryFacility>(new IndustryFacilityProcessor(),
+        super.addProcessorConfiguration(DataType.INDUSTRY_FACILITY, new ProcessorConfiguration<IndustryFacility>(new IndustryFacilityProcessor(),
                 getIndustryFacilityConsumer()));
     }
 
@@ -70,13 +71,19 @@ public class CrestHandler extends CrestDataHandler {
      * Start background timer thread and fetch the data for the first time.
      */
     public void init() {
+        if (initialized) {
+            return;
+        }
         if ((scheduleService == null) || scheduleService.isShutdown()) {
             scheduleService = Executors.newScheduledThreadPool(1);
         }
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Scheduling data updates");
         }
-        scheduleService.scheduleAtFixedRate(() -> updateData(), MINUTES_30, MINUTES_30, TimeUnit.MINUTES);
+        synchronized (LOGGER) {
+            scheduleService.scheduleAtFixedRate(() -> updateData(), MINUTES_30, MINUTES_30, TimeUnit.MINUTES);
+            initialized = true;
+        }
         updateData();
     }
 
@@ -84,8 +91,11 @@ public class CrestHandler extends CrestDataHandler {
      * Shutdown background execution.
      */
     public void shutdown() {
-        if (scheduleService != null) {
-            scheduleService.shutdownNow();
+        if ((scheduleService != null) && initialized) {
+            synchronized (LOGGER) {
+                scheduleService.shutdownNow();
+                initialized = false;
+            }
         }
     }
 

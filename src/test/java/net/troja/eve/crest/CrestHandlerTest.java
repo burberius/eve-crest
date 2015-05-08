@@ -93,4 +93,20 @@ public class CrestHandlerTest {
 
         handler.shutdown();
     }
+
+    @Test
+    public void testSchedulerInitizialisation() {
+        final CrestContainer<Object> crestContainer = new CrestContainer<Object>();
+        when(processor.downloadAndProcessContainerData(any())).thenReturn(crestContainer);
+
+        handler.enableDataPrefetching(DataType.ITEM_TYPE);
+        handler.shutdown();
+        handler.init();
+        handler.init();
+        handler.shutdown();
+        handler.init();
+
+        verify(processor, times(2)).downloadAndProcessContainerData(any());
+        handler.shutdown();
+    }
 }

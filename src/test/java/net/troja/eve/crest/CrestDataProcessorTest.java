@@ -21,6 +21,7 @@ package net.troja.eve.crest;
  */
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -49,7 +50,9 @@ import org.mockito.MockitoAnnotations;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class CrestDataProcessorTest {
-    private static final String EXAMPLE_FILE = "/CompleteItemTypes.json";
+    private static final String EXAMPLE_FILE1 = "/CompleteItemTypes.json";
+    private static final String EXAMPLE_FILE2 = "/Status.json";
+
     private final CrestDataProcessor objectToTest = new CrestDataProcessor();
 
     @Mock
@@ -65,7 +68,7 @@ public class CrestDataProcessorTest {
     public void testContainerParsing() throws IOException, URISyntaxException {
         final ItemTypeProcessor processor = mock(ItemTypeProcessor.class);
 
-        when(accessor.getData(anyString())).thenReturn(getExampleData());
+        when(accessor.getData(anyString())).thenReturn(getTestData(EXAMPLE_FILE1));
         when(processor.parseEntry((JsonNode) any())).thenReturn(new ItemType());
 
         final CrestContainer<ItemType> container = objectToTest.downloadAndProcessContainerData(processor);
@@ -75,8 +78,22 @@ public class CrestDataProcessorTest {
         assertThat(container.getEntries().size(), equalTo(5));
     }
 
-    private String getExampleData() throws URISyntaxException, IOException {
-        final URL resource = getClass().getResource(EXAMPLE_FILE);
+    @Test
+    public void testContainerParsingWithOtherData() throws IOException, URISyntaxException {
+        final ItemTypeProcessor processor = mock(ItemTypeProcessor.class);
+
+        when(accessor.getData(anyString())).thenReturn(getTestData(EXAMPLE_FILE2));
+        when(processor.parseEntry((JsonNode) any())).thenReturn(new ItemType());
+
+        final CrestContainer<ItemType> container = objectToTest.downloadAndProcessContainerData(processor);
+
+        assertThat(container.getEntries(), notNullValue());
+        assertThat(container.getEntries().size(), equalTo(0));
+        assertThat(container.getTimestamp(), greaterThan(100000L));
+    }
+
+    private String getTestData(final String fileName) throws URISyntaxException, IOException {
+        final URL resource = getClass().getResource(fileName);
         final Path file = Paths.get(resource.toURI());
         final String answer = new String(Files.readAllBytes(file));
         return answer;
@@ -119,7 +136,7 @@ public class CrestDataProcessorTest {
     public void testExceptionWhenParsingEntry() throws IOException, URISyntaxException {
         final ItemTypeProcessor processor = mock(ItemTypeProcessor.class);
 
-        when(accessor.getData(anyString())).thenReturn(getExampleData());
+        when(accessor.getData(anyString())).thenReturn(getTestData(EXAMPLE_FILE1));
         when(processor.parseEntry((JsonNode) any())).thenThrow(IOException.class);
 
         final CrestContainer<ItemType> container = objectToTest.downloadAndProcessContainerData(processor);
