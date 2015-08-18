@@ -81,7 +81,11 @@ public class CrestHandler extends CrestDataHandler {
             LOGGER.info("Scheduling data updates");
         }
         synchronized (LOGGER) {
-            scheduleService.scheduleAtFixedRate(() -> updateData(), MINUTES_30, MINUTES_30, TimeUnit.MINUTES);
+            scheduleService.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                }
+            }, MINUTES_30, MINUTES_30, TimeUnit.MINUTES);
             initialized = true;
         }
         updateData();
