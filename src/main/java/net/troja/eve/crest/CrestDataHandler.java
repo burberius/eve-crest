@@ -37,7 +37,7 @@ import org.apache.logging.log4j.Logger;
  * <p>
  * Do not use this class, use {@link CrestHandler} instead as it includes the caching of the data.
  */
-public class CrestDataHandler {
+public abstract class CrestDataHandler {
     private static final Logger LOGGER = LogManager.getLogger(CrestDataHandler.class);
 
     public enum DataType {
@@ -105,7 +105,10 @@ public class CrestDataHandler {
             }
             final int refreshInterval = procConfig.getProcessor().getRefreshInterval();
             if (procConfig.isEnabled() && (lastUpdate < (System.currentTimeMillis() - refreshInterval))) {
-                lastUpdates.put(entry.getKey(), updateData(procConfig));
+                final long updateDate = updateData(procConfig);
+                if (updateDate > 0) {
+                    lastUpdates.put(entry.getKey(), updateDate);
+                }
             }
         }
         if (LOGGER.isInfoEnabled()) {
@@ -118,8 +121,13 @@ public class CrestDataHandler {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Updating: " + typeProcessor.getClass().getSimpleName().replace("Processor", ""));
         }
+        long updateDate = -1;
         final CrestContainer<T> result = processor.downloadAndProcessContainerData(typeProcessor);
-        config.getConsumer().accept(result.getEntries());
-        return result.getTimestamp();
+
+        if (result != null) {
+            config.getConsumer().accept(result.getEntries());
+            updateDate = result.getTimestamp();
+        }
+        return updateDate;
     }
 }

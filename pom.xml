@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.troja.eve</groupId>
     <artifactId>crest</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <name>Library for the Eve Online CREST API</name>
     <description>Library to access the data of the Eve Online CREST API.
 Documentation: https://wiki.eveonline.com/en/wiki/CREST_Getting_Started</description>
