@@ -35,47 +35,47 @@ import org.apache.logging.log4j.Logger;
 
 public class CrestAccessor {
     private static final Logger LOGGER = LogManager.getLogger(CrestAccessor.class);
-    private static final String API_URL = "https://public-crest.eveonline.com";
+    private static final String API_URL = "https://crest-tq.eveonline.com";
     private static final String USER_AGENT = "eve-crest Java library - https://github.com/burberius/eve-crest - ";
 
     private String userAgent = USER_AGENT + getClass().getPackage().getImplementationVersion();
 
     public String getUserAgent() {
-	return userAgent;
+        return userAgent;
     }
 
     public void setUserAgent(final String userAgent) {
-	this.userAgent = userAgent;
+        this.userAgent = userAgent;
     }
 
     public String getDataPage(final String address) throws IOException {
-	final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-	final CloseableHttpClient httpclient = clientBuilder.build();
-	final HttpGet request = new HttpGet(address);
-	String result = null;
-	try {
-	    request.setHeader("User-Agent", userAgent);
-	    final HttpResponse response = httpclient.execute(request);
-	    final StatusLine statusLine = response.getStatusLine();
-	    final int status = statusLine.getStatusCode();
-	    if ((status >= HttpStatus.SC_OK) && (status < HttpStatus.SC_MULTIPLE_CHOICES)) {
-		final HttpEntity entity = response.getEntity();
-		if (entity != null) {
-		    result = EntityUtils.toString(entity);
-		}
-	    } else {
-		if (LOGGER.isWarnEnabled()) {
-		    LOGGER.warn("Got " + status + " for the query " + address);
-		}
-	    }
-	} finally {
-	    request.reset();
-	    httpclient.close();
-	}
-	return result;
+        final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+        final CloseableHttpClient httpclient = clientBuilder.build();
+        final HttpGet request = new HttpGet(address);
+        String result = null;
+        try {
+            request.setHeader("User-Agent", userAgent);
+            final HttpResponse response = httpclient.execute(request);
+            final StatusLine statusLine = response.getStatusLine();
+            final int status = statusLine.getStatusCode();
+            if ((status >= HttpStatus.SC_OK) && (status < HttpStatus.SC_MULTIPLE_CHOICES)) {
+                final HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    result = EntityUtils.toString(entity);
+                }
+            } else {
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn("Got " + status + " for the query " + address);
+                }
+            }
+        } finally {
+            request.reset();
+            httpclient.close();
+        }
+        return result;
     }
 
     public String getData(final String path) throws IOException {
-	return getDataPage(API_URL + path);
+        return getDataPage(API_URL + path);
     }
 }
