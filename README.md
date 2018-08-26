@@ -1,3 +1,9 @@
+DEPRECATED
+==========
+CCP switched of the XML and CREST API on May 8th, 2018. Therefore this library is useless from that day on.
+
+See: https://developers.eveonline.com/blog/article/important-information-on-the-future-of-the-eve-api
+
 eve-crest
 =========
 
